@@ -1,0 +1,1 @@
+CREATE DATABASE release_monkey_db;

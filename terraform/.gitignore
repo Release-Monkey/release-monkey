@@ -1,0 +1,36 @@
+SQL/.vs/slnx.sqlite
+SQL/.vs/SQL/v15/.ssms_suo
+
+flywaylocal.conf
+
+releases
+
+env.properties
+
+*.env
+
+*.vscode
+
+*.idea
+
+*.lock.hcl
+
+*.state
+
+*tfvars
+
+*.vs
+
+*.tfvars
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+flywayCommands.txt
