@@ -63,47 +63,47 @@ resource "aws_route_table_association" "association_b" {
   route_table_id = aws_route_table.release_monkey_route_table.id
 }
 
-resource "aws_db_instance" "release-monkey-db-sql_serv" {
-  identifier                  = "release-monkey-db-sql-serv"
-  allocated_storage           = 20
-  engine               = "sqlserver-ex"
-  engine_version       = "16.00.4095.4.v1"
-  instance_class              = "db.t3.micro"
-  publicly_accessible         = true
-  username                    = "admin"
-  multi_az             = false # Free tier supports only single AZ
-  manage_master_user_password = true #Fetch password from console
-  apply_immediately = true
-  copy_tags_to_snapshot = true
-  db_subnet_group_name =  aws_db_subnet_group.release_monkey_subnet_group.name
-  skip_final_snapshot = true
+# resource "aws_db_instance" "release-monkey-db-sql_serv" {
+#   identifier                  = "release-monkey-db-sql-serv"
+#   allocated_storage           = 20
+#   engine               = "sqlserver-ex"
+#   engine_version       = "16.00.4095.4.v1"
+#   instance_class              = "db.t3.micro"
+#   publicly_accessible         = true
+#   username                    = "admin"
+#   multi_az             = false # Free tier supports only single AZ
+#   manage_master_user_password = true #Fetch password from console
+#   apply_immediately = true
+#   copy_tags_to_snapshot = true
+#   db_subnet_group_name =  aws_db_subnet_group.release_monkey_subnet_group.name
+#   skip_final_snapshot = true
 
-  vpc_security_group_ids = [
-    aws_security_group.sql_serv_security_group.id
-  ]
-  tags = var.mandatory_tags
-}
+#   vpc_security_group_ids = [
+#     aws_security_group.sql_serv_security_group.id
+#   ]
+#   tags = var.mandatory_tags
+# }
 
 # Define EC2 instance resource
-resource "aws_instance" "release_monkey_instance" {
-  ami           = "ami-0ef9e689241f0bb6e" 
-  instance_type = "t2.micro"  
-  subnet_id     = aws_subnet.subnet_a.id  
+# resource "aws_instance" "release_monkey_instance" {
+#   ami           = "ami-0ef9e689241f0bb6e" 
+#   instance_type = "t2.micro"  
+#   subnet_id     = aws_subnet.subnet_a.id  
 
-  # Associate the instance with the EC2 security group
-  vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
+#   # Associate the instance with the EC2 security group
+#   vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
 
-  # Associate the instance with an existing key pair for SSH access
-  #key_name = "release_monkey_ec2_key_pair"
+#   # Associate the instance with an existing key pair for SSH access
+#   #key_name = "release_monkey_ec2_key_pair"
 
-  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstance" })
-}
+#   tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstance" })
+# }
 
-resource "aws_eip" "lb" {
-  instance = aws_instance.release_monkey_instance.id
-  domain   = "vpc"
-  tags = var.mandatory_tags
-}
+# resource "aws_eip" "lb" {
+#   instance = aws_instance.release_monkey_instance.id
+#   domain   = "vpc"
+#   tags = var.mandatory_tags
+# }
 
 
 
