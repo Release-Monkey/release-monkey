@@ -85,25 +85,25 @@ resource "aws_db_instance" "release-monkey-db-sql_serv" {
 }
 
 # Define EC2 instance resource
-# resource "aws_instance" "release_monkey_instance" {
-#   ami           = "ami-0ef9e689241f0bb6e" 
-#   instance_type = "t2.micro"  
-#   subnet_id     = aws_subnet.subnet_a.id  
+resource "aws_instance" "release_monkey_instance" {
+  ami           = "ami-0ef9e689241f0bb6e" 
+  instance_type = "t2.micro"  
+  subnet_id     = aws_subnet.subnet_a.id  
 
-#   # Associate the instance with the EC2 security group
-#   vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
+  # Associate the instance with the EC2 security group
+  vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
 
-#   # Associate the instance with an existing key pair for SSH access
-#   #key_name = "release_monkey_ec2_key_pair"
+  # Associate the instance with an existing key pair for SSH access
+  #key_name = "release_monkey_ec2_key_pair"
 
-#   tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstance" })
-# }
+  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstance" })
+}
 
-# resource "aws_eip" "lb" {
-#   instance = aws_instance.release_monkey_instance.id
-#   domain   = "vpc"
-#   tags = var.mandatory_tags
-# }
+resource "aws_eip" "lb" {
+  instance = aws_instance.release_monkey_instance.id
+  domain   = "vpc"
+  tags = var.mandatory_tags
+}
 
 
 
