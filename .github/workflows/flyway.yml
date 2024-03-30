@@ -3,8 +3,8 @@ name: Flyway Migrations
 on:
 
   pull_request:
-    types:
-      - closed
+  #   types:
+  #     - closed
     branches:
       - main
   
@@ -13,7 +13,7 @@ env:
 
 jobs:
   build:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -25,7 +25,7 @@ jobs:
 
     - name: Run Flyway Migrations
       env:
-        FLYWAY_URL: jdbc:sqlserver://release-monkey-db-sql_serv.cbsozziiwdya.eu-west-1.rds.amazonaws.com:1433;authentication=sqlPassword;databaseName=release-monkey-db;encrypt=false;trustServerCertificate=true
+        FLYWAY_URL: ${{ secrets.DB_BUILD_URL}}
         FLYWAY_USER: ${{ secrets.DB_BUILD_USERNAME }}
         FLYWAY_PASSWORD: ${{ secrets.DB_BUILD_PASSWORD }}
       run: |
