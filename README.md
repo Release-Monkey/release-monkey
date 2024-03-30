@@ -12,3 +12,23 @@
 
 ### Postman for mock api calls
 - Launch postman and import postman folder 
+
+### Running CLI
+
+You must be in the /cli folder to run the CLI.
+
+```bash
+$ dotnet run COMMAND
+```
+
+Where `COMMAND` is the command to be executed. See `Program.cs` for the available commands.
+
+### Building the CLI
+
+You must be in the /cli folder to build the CLI.
+
+```bash
+$ dotnet publish -c Release
+```
+
+The executable file can be found in folder `cli\bin\Release\net8.0\publish`
