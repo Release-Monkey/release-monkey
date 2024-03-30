@@ -4,8 +4,8 @@ BEGIN TRANSACTION QUICKDBD
 
 CREATE TABLE [Releaser] (
     [ReleaserID] int  NOT NULL ,
-    [Name] string  NOT NULL ,
-    [EmailAddress] string  NOT NULL ,
+    [Name] varchar(200)  NOT NULL ,
+    [EmailAddress] varchar(200)  NOT NULL ,
     CONSTRAINT [PK_Releaser] PRIMARY KEY CLUSTERED (
         [ReleaserID] ASC
     )
@@ -14,7 +14,7 @@ CREATE TABLE [Releaser] (
 CREATE TABLE [Project] (
     [ProjectID] int  NOT NULL ,
     [ProjectName] varchar(200)  NOT NULL ,
-    [Repo] string  NOT NULL ,
+    [Repo] varchar(200)  NOT NULL ,
     CONSTRAINT [PK_Project] PRIMARY KEY CLUSTERED (
         [ProjectID] ASC
     ),
@@ -38,8 +38,8 @@ CREATE TABLE [ReleaserProject] (
 -- Table documentation comment 1 (try the PDF/RTF export)
 CREATE TABLE [Tester] (
     [TesterID] int  NOT NULL ,
-    [Name] string  NOT NULL ,
-    [EmailAddress] string  NOT NULL ,
+    [Name] varchar(200)  NOT NULL ,
+    [EmailAddress] varchar(200)  NOT NULL ,
     CONSTRAINT [PK_Tester] PRIMARY KEY CLUSTERED (
         [TesterID] ASC
     )
@@ -56,7 +56,7 @@ CREATE TABLE [TesterProject] (
 
 CREATE TABLE [Release] (
     [ReleaseID] int  NOT NULL ,
-    [ReleaseName] string  NOT NULL ,
+    [ReleaseName] varchar(200)  NOT NULL ,
     [ProjectID] int  NOT NULL ,
     [State] enum  NOT NULL ,
     CONSTRAINT [PK_Release] PRIMARY KEY CLUSTERED (
@@ -69,7 +69,7 @@ CREATE TABLE [ReleaseTester] (
     [ReleaseID] int  NOT NULL ,
     [TesterID] int  NOT NULL ,
     [State] enum  NOT NULL ,
-    [Comment] string  NOT NULL ,
+    [Comment] varchar(200)  NOT NULL ,
     CONSTRAINT [PK_ReleaseTester] PRIMARY KEY CLUSTERED (
         [ReleaseTesterID] ASC
     )
@@ -78,7 +78,7 @@ CREATE TABLE [ReleaseTester] (
 CREATE TABLE [Bug] (
     [BugID] int  NOT NULL ,
     [ReleaseTester] int  NOT NULL ,
-    [Comment] string  NOT NULL ,
+    [Comment] varchar(200)  NOT NULL ,
     CONSTRAINT [PK_Bug] PRIMARY KEY CLUSTERED (
         [BugID] ASC
     )
