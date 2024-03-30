@@ -7,16 +7,16 @@ resource "aws_security_group" "sql_serv_security_group" {
   #Enable internet access to the database
   # Allow inbound traffic from IPv4
   ingress {
-      from_port   = 3306
-      to_port     = 3306
+      from_port   = 1433
+      to_port     = 1433
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"] # Allow inbound traffic from any IPv4 address
   }
 
   # Allow inbound traffic from IPv6
   ingress {
-      from_port   = 3306
-      to_port     = 3306
+      from_port   = 1433
+      to_port     = 1433
       protocol    = "tcp"
       ipv6_cidr_blocks = ["::/0"] # Allow inbound traffic from any IPv6 address
   }
@@ -33,7 +33,7 @@ resource "aws_security_group" "sql_serv_security_group" {
       from_port   = 8080
       to_port     = 8080
       protocol    = "tcp"
-      ipv6_cidr_blocks = ["::/0"] # Allow inbound traffic from any IPv4 address
+      ipv6_cidr_blocks = ["::/0"] # Allow inbound traffic from any IPv6 address
   }
 
   # Define outbound rule to allow traffic to the EC2 instance from the RDS database

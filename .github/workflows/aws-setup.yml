@@ -1,8 +1,8 @@
 name: "Terraform action"
 on: 
   pull_request:
-    types:
-      - closed
+    # types:
+    #   - closed
     branches:
       - main
 
@@ -16,7 +16,7 @@ env:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     defaults:
       run:
