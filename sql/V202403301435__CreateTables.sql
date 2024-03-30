@@ -58,7 +58,7 @@ CREATE TABLE [Release] (
     [ReleaseID] int  NOT NULL ,
     [ReleaseName] varchar(200)  NOT NULL ,
     [ProjectID] int  NOT NULL ,
-    [State] enum  NOT NULL ,
+    [State] int  NOT NULL ,
     CONSTRAINT [PK_Release] PRIMARY KEY CLUSTERED (
         [ReleaseID] ASC
     )
@@ -68,7 +68,7 @@ CREATE TABLE [ReleaseTester] (
     [ReleaseTesterID] int  NOT NULL ,
     [ReleaseID] int  NOT NULL ,
     [TesterID] int  NOT NULL ,
-    [State] enum  NOT NULL ,
+    [State] int  NOT NULL ,
     [Comment] varchar(200)  NOT NULL ,
     CONSTRAINT [PK_ReleaseTester] PRIMARY KEY CLUSTERED (
         [ReleaseTesterID] ASC
