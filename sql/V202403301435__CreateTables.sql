@@ -1,5 +1,4 @@
 ﻿USE release_monkey_db;
-GO;
 
 BEGIN TRANSACTION QUICKDBD
 
