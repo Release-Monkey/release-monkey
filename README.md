@@ -10,8 +10,10 @@
 ## SQL Migrations instructions
 - upload your sql to the migrations folder as a new file with this naming convention V{year}{month}{day}{24hour}{min}__{description}.sql
 
-### Postman for mock api calls
+## Postman for mock api calls
 - Launch postman and import postman folder 
+
+## CLI
 
 ### Running CLI
 
@@ -32,3 +34,12 @@ $ dotnet publish -c Release
 ```
 
 The executable file can be found in folder `cli\bin\Release\net8.0\publish`
+
+## Access the database using MS SQL Server studio
+- Open ms sql sever studio
+- Set server type to database engine
+- Insert {} as the server name
+- Select SQL sever authentication
+- login as admin
+- Password: 
+
