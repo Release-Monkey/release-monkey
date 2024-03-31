@@ -6,7 +6,7 @@
 -- To reset the sample schema, replace everything with
 -- two dots ('..' - without quotes).
 
-SET XACT_ABORT ON
+USE release_monkey_db;
 
 BEGIN TRANSACTION QUICKDBD
 
