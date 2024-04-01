@@ -3,7 +3,7 @@
 BEGIN TRANSACTION QUICKDBD
 
 CREATE TABLE [User] (
-    [UserID] int  NOT NULL ,
+    [UserID] int IDENTITY(1,1) NOT NULL ,
     [Name] varchar(200)  NOT NULL ,
     [EmailAddress] varchar(200)  NOT NULL ,
     CONSTRAINT [PK_User] PRIMARY KEY CLUSTERED (
@@ -12,7 +12,7 @@ CREATE TABLE [User] (
 )
 
 CREATE TABLE [Project] (
-    [ProjectID] int  NOT NULL ,
+    [ProjectID] int IDENTITY(1,1) NOT NULL ,
     [ProjectName] varchar(200)  NOT NULL ,
     [Repo] varchar(200)  NOT NULL ,
     [Token] varchar(200)  NOT NULL ,
@@ -31,7 +31,7 @@ CREATE TABLE [Project] (
 )
 
 CREATE TABLE [UserProject] (
-    [UserProjectID] int  NOT NULL ,
+    [UserProjectID] int IDENTITY(1,1) NOT NULL ,
     [UserID] int  NOT NULL ,
     [ProjectID] int  NOT NULL ,
     [Role] int  NOT NULL ,
@@ -41,7 +41,7 @@ CREATE TABLE [UserProject] (
 )
 
 CREATE TABLE [Release] (
-    [ReleaseID] int  NOT NULL ,
+    [ReleaseID] int IDENTITY(1,1) NOT NULL ,
     [ReleaseName] varchar(200)  NOT NULL ,
     [ProjectID] int  NOT NULL ,
     [State] int  NOT NULL ,
@@ -51,11 +51,11 @@ CREATE TABLE [Release] (
 )
 
 CREATE TABLE [ReleaseTester] (
-    [ReleaseTesterID] int  NOT NULL ,
+    [ReleaseTesterID] int IDENTITY(1,1) NOT NULL ,
     [ReleaseID] int  NOT NULL ,
     [TesterID] int  NOT NULL ,
     [State] int  NOT NULL ,
-    [Comment] varchar(200)  NOT NULL ,
+    [Comment] nvarchar(2000)  NOT NULL ,
     CONSTRAINT [PK_ReleaseTester] PRIMARY KEY CLUSTERED (
         [ReleaseTesterID] ASC
     )
