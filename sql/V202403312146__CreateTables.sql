@@ -19,14 +19,8 @@ CREATE TABLE [Project] (
     CONSTRAINT [PK_Project] PRIMARY KEY CLUSTERED (
         [ProjectID] ASC
     ),
-    CONSTRAINT [UK_Project_ProjectName] UNIQUE (
-        [ProjectName]
-    ),
     CONSTRAINT [UK_Project_Repo] UNIQUE (
         [Repo]
-    ),
-    CONSTRAINT [UK_Project_Token] UNIQUE (
-        [Token]
     )
 )
 
