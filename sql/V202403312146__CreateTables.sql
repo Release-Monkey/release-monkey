@@ -38,7 +38,6 @@ CREATE TABLE [Release] (
     [ReleaseID] int IDENTITY(1,1) NOT NULL ,
     [ReleaseName] varchar(200)  NOT NULL ,
     [ProjectID] int  NOT NULL ,
-    [State] int  NOT NULL ,
     CONSTRAINT [PK_Release] PRIMARY KEY CLUSTERED (
         [ReleaseID] ASC
     )
