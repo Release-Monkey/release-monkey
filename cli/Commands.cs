@@ -13,7 +13,18 @@ namespace cli
 
         public Task Logout() { throw new NotImplementedException(); }
 
-        public Task CreateProject(string projectName, string githubRepo) { throw new NotImplementedException(); }
+        public async Task CreateProject(string projectName, string githubRepo)
+        {
+            try
+            {
+                var project = await apiService.CreateProject(projectName, githubRepo);
+                Console.WriteLine($"Project has been created. Project id is {project.Id}");
+            }
+            catch (ApiException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
 
         public Task SetProject(string projectId) { throw new NotImplementedException(); }
 

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 namespace cli.models
 {
-    internal record User(string Email, String DisplayName);
+    internal record User(string Email, string DisplayName);
+
+    internal record Project(int Id, string Name, string Repo);
 }

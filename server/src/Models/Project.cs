@@ -1,4 +1,4 @@
-namespace ReleaseMonkey.Server.Model
+namespace ReleaseMonkey.Server.Models
 {
   public record Project
   (
