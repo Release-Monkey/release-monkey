@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System;
+using Microsoft.Data.SqlClient;
 
 namespace ReleaseMonkey.src.Repositories
 {
@@ -10,14 +11,14 @@ namespace ReleaseMonkey.src.Repositories
 
         public Db()
         {
+            DotNetEnv.Env.Load();
             SqlConnectionStringBuilder builder = new()
             {
-                // TODO: Read from Environment variable
-                DataSource = "localhost",
-                UserID = "admin",
-                Password = "password",
-                InitialCatalog = "release_monkey_db",
-                TrustServerCertificate = true
+                DataSource = Environment.GetEnvironmentVariable("DB_HOST"),
+                UserID = Environment.GetEnvironmentVariable("DB_USER"),
+                Password = Environment.GetEnvironmentVariable("DB_PASS"),
+                InitialCatalog = Environment.GetEnvironmentVariable("DB_NAME"),
+                TrustServerCertificate = bool.Parse(Environment.GetEnvironmentVariable("DB_TRUST_CERT"))
             };
 
             conn = new SqlConnection(builder.ConnectionString);
