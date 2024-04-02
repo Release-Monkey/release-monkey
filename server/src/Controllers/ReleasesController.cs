@@ -22,10 +22,10 @@ namespace ReleaseMonkey.Server.Controller
         [HttpGet]
         public IActionResult Fetch()
         {
-            return Ok(projects);
+            return Ok(releases);
         }
 
-        [HttpGet("{id:int}", Name = "FetchProjectById")]
+        [HttpGet("{id:int}", Name = "FetchReleaseById")]
         public IActionResult Fetch(int id)
         {
             /*return Ok(projects.Find(release => release.Id == id));*/
@@ -36,8 +36,8 @@ namespace ReleaseMonkey.Server.Controller
         public async Task<IActionResult> Create(CreateReleaseRequest body)
         {
             int userId = 1;
-            var createdRelease = await projects.CreateRelease(body.Name, body.ProjectId);
-            return CreatedAtRoute("FetchReleaseById", new { createdProject.Id }, createdRelease);
+            var createdRelease = await releases.CreateRelease(body.Name, body.ProjectId);
+            return CreatedAtRoute("FetchReleaseById", new { createdRelease.ReleaseId }, createdRelease);
         }
     }
 }
