@@ -1,4 +1,4 @@
 ### This PR affects / introduces the following:
 - 
 
-### Related Ticket: [BBC-XXXX](https://release-monkey.atlassian.net/browse/BBC-XXXX)
+### Related Ticket: [SCRUM-XXXX](https://release-monkey.atlassian.net/browse/SCRUM-XXXX)
