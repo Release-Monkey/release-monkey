@@ -1,4 +1,5 @@
 ﻿using cli.services;
+using ReleaseMonkey.Server.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,38 @@ using System.Threading.Tasks;
 
 namespace cli
 {
-    internal class Commands(AuthService authService, ApiService apiService)
+    internal class Commands(LocalPreferencesServices preferencesServices, ApiService apiService, GithubService githubService)
     {
-        public Task LoginWithGithub() { throw new NotImplementedException(); }
+        public async Task LoginWithGithub()
+        {
+            var accessCode = await githubService.GetAccessCode();
+            var user = await apiService.LoginUser(accessCode);
+            preferencesServices.SetUser(user);
 
-        public Task Logout() { throw new NotImplementedException(); }
+            Console.WriteLine($"Signed in as {user.Name}, {user.Email}.");
+        }
+
+        public Task Logout()
+        {
+            preferencesServices.ClearUser();
+            Console.WriteLine("Signed out. You will have to sign in again to publish releases.");
+            return Task.FromResult<object?>(null);
+        }
+
+        public Task PrintCurrentUser()
+        {
+            var user = preferencesServices.GetUser();
+            if (user == null)
+            {
+                Console.WriteLine("Not signed in.");
+            }
+            else
+            {
+                Console.WriteLine($"Signed in as {user.Name}, {user.Email}.");
+            }
+
+            return Task.FromResult<object?>(null);
+        }
 
         public async Task CreateProject(string projectName, string githubRepo)
         {
