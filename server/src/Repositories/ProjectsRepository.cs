@@ -6,37 +6,27 @@ using System.Data;
 
 namespace ReleaseMonkey.Server.Repositories
 {
-    public class ProjectsRepository(Db db)
+    public class ProjectsRepository
     {
-        public Project InsertProject(int userId, string projectName, string githubRepo, string token)
+        public Project InsertProject(SqlTransaction transaction, Db db, string projectName, string repo, string token)
         {
             string sql = @"INSERT INTO [Project](ProjectName, Repo, Token)
-                            VALUES(@ProjectName, @Repo, @Token);
-                           INSERT INTO[UserProject](UserId, ProjectID, Role)
-                            OUTPUT INSERTED.ProjectID
-                            VALUES(@UserId, SCOPE_IDENTITY(), @Role)";
-            using (SqlTransaction transaction = db.Connection.BeginTransaction())
+                            VALUES(@ProjectName, @Repo, @Token);";
+
             using (SqlCommand command = new(sql, db.Connection, transaction))
             {
                 command.Parameters.Add("@ProjectName", System.Data.SqlDbType.VarChar).Value = projectName;
-                command.Parameters.Add("@Repo", System.Data.SqlDbType.VarChar).Value = githubRepo;
+                command.Parameters.Add("@Repo", System.Data.SqlDbType.VarChar).Value = repo;
                 command.Parameters.Add("@Token", System.Data.SqlDbType.VarChar).Value = token;
-                command.Parameters.Add("@UserId", System.Data.SqlDbType.Int).Value = userId;
-                command.Parameters.Add("@Role", System.Data.SqlDbType.Int).Value = 1;
 
-                try
+                if (db == null || db.Connection == null || transaction == null)
                 {
-                    int projectId = (int)command.ExecuteScalar();
-                    transaction.Commit();
+                    Console.WriteLine("Null");// Handle the null condition appropriately, such as throwing an exception or logging an error.
+                }
 
-                    return new Project(projectId, projectName, githubRepo);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    transaction.Rollback();
-                    return new Project(-1, string.Empty, string.Empty);
-                }
+                int projectId = (int)command.ExecuteScalar();
+                return new Project(projectId, projectName, repo);
+
             }
         }
     }

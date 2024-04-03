@@ -12,6 +12,7 @@ namespace ReleaseMonkey.Server
       {
         builder.Services.AddSingleton<Db>();
         builder.Services.AddSingleton<ProjectsRepository>();
+        builder.Services.AddSingleton<UserProjectsRepository>();
 
         builder.Services.AddSingleton<ProjectsService>();
 
