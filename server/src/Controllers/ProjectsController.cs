@@ -42,7 +42,7 @@ namespace ReleaseMonkey.Server.Controller
         {
             int userId = 1;
             var createdProject = await projects.CreateProject(userId, body.Name, body.Repository, new Random().NextDouble().ToString());
-            return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
+            return CreatedAtRoute("FetchProjectById", new { createdProject.ProjectId }, createdProject);
         }
 /*
         [HttpPut("{id:int}")]

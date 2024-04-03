@@ -30,7 +30,7 @@ namespace ReleaseMonkey.Server.Repositories
 
             using SqlDataReader reader = db.ExecuteReader(command);
             reader.Read();
-            return new Project(reader.GetInt32("ProjectID"), projectName, githubRepo);
+            return new Project(reader.GetInt32("ProjectID"), projectName, githubRepo, token, userId);
         }
     }
 }

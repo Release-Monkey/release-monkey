@@ -29,13 +29,12 @@ namespace ReleaseMonkey.Server.Controller
         public IActionResult Fetch(int id)
         {
             /*return Ok(projects.Find(release => release.Id == id));*/
-            return Ok();
+            return Ok(releases);
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateReleaseRequest body)
         {
-            int userId = 1;
             var createdRelease = await releases.CreateRelease(body.Name, body.ProjectId);
             return CreatedAtRoute("FetchReleaseById", new { createdRelease.ReleaseId }, createdRelease);
         }

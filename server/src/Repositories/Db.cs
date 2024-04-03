@@ -13,8 +13,8 @@ namespace ReleaseMonkey.src.Repositories
             SqlConnectionStringBuilder builder = new()
             {
                 // TODO: Read from Environment variable
-                DataSource = "localhost",
-                UserID = "admin",
+                DataSource = "localhost\\SQLEXPRESS",
+                UserID = "user",
                 Password = "password",
                 InitialCatalog = "release_monkey_db",
                 TrustServerCertificate = true
