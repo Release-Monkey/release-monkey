@@ -9,14 +9,15 @@ namespace ReleaseMonkey.Server.Controller
 {
     public record CreateProjectRequest
     (
-        string Name,
-        string Repository
+        int userId,
+        string projectName,
+        string repo
     );
 
     public record UpdateProjectRequest
     (
-        string Name,
-        string Repository
+        string projectName,
+        string repo
     );
 
     [ApiController]
@@ -49,9 +50,8 @@ namespace ReleaseMonkey.Server.Controller
         [HttpPost]
         public async Task<IActionResult> Create(CreateProjectRequest body)
         {
-            int userId = 1;
-            var createdProject = await projects.CreateProject(userId, body.Name, body.Repository, new Random().NextDouble().ToString());
-            return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
+            var createdProject = await projects.CreateProject(body.userId, body.projectName, body.repo, new Random().NextDouble().ToString());
+            return CreatedAtRoute("FetchProjectById", new { createdProject.id }, createdProject);
         }
 /*
         [HttpPut("{id:int}")]

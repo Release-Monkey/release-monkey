@@ -2,8 +2,8 @@ namespace ReleaseMonkey.Server.Models
 {
   public record Project
   (
-    int Id,
-    string Name,
-    string Repository
+    int id,
+    string name,
+    string repo
   );
 }
