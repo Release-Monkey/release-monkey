@@ -16,7 +16,7 @@ namespace ReleaseMonkey.Server.Services
                 try
                 {
                     Project project = projects.InsertProject(transaction, db, projectName, githubRepo, token);
-                    UserProject userProject = userProjects.InsertUserProject(transaction, db, userId, project.id, 1);
+                    userProjects.InsertUserProject(transaction, db, userId, project.id, 1);
                     transaction.Commit();
                     return Task.FromResult(project);
                 }
