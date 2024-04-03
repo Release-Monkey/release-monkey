@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReleaseMonkey.Server.Models;
 using ReleaseMonkey.Server.Services;
+using ReleaseMonkey.Server.Types;
 
 
 
@@ -25,9 +26,17 @@ namespace ReleaseMonkey.Server.Controller
         private readonly ProjectsService projects = projects;
 
         [HttpGet]
-        public IActionResult Fetch()
-        {
-            return Ok(projects);
+        public async Task<IActionResult> Fetch(string? search, string? orderBy, string? sort, int? size, int? page) {
+            var modifier = new Modifier(
+                search ?? "",
+                orderBy ?? "id",
+                sort?.ToUpper() ?? "ASC",
+                size ?? (size >= 1 ? size : 3),
+                page ?? (page >= 1 ? page : 1)
+            );
+
+            var fetchedProjects = await projects.FetchProjects(modifier);
+            return Ok(fetchedProjects);
         }
 
         [HttpGet("{id:int}", Name = "FetchProjectById")]
