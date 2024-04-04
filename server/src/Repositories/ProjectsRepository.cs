@@ -21,7 +21,7 @@ namespace ReleaseMonkey.Server.Repositories
                 command.Parameters.Add("@Token", System.Data.SqlDbType.VarChar).Value = token;
 
                 int projectId = (int) (decimal) command.ExecuteScalar(); // Make use of ExecutionReader if you want to retrieve more than one value ExecuteScalar() is only retrieving the first column of the first row    
-                return new Project(projectId, projectName, repo, token);
+                return new Project(projectId, projectName, repo);
 
             }
         }
