@@ -1,15 +1,15 @@
 ﻿using cli;
 using cli.services;
+using ReleaseMonkey.Server.Services;
 
 internal class Program
 {
     private static async Task Main(string[] args)
     {
         LocalPreferencesServices localPreferencesServices = new();
-        AuthService authService = new(localPreferencesServices);
-        ApiService apiService = new(authService);
-
-        Commands commands = new(authService, apiService);
+        ApiService apiService = new(localPreferencesServices);
+        GithubService githubService = new("Iv1.2a4a99768f6b514e", 30001);
+        Commands commands = new(localPreferencesServices, apiService, githubService);
 
         if (args.Length > 0)
         {
@@ -20,6 +20,9 @@ internal class Program
                     break;
                 case "logout":
                     await commands.Logout();
+                    break;
+                case "user":
+                    await commands.PrintCurrentUser();
                     break;
                 case "create-project":
                     if (args.Length > 1)

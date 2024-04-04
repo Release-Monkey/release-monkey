@@ -1,14 +1,23 @@
 ﻿using cli.models;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
 namespace cli.services
 {
-    internal class ApiService(AuthService AuthService)
+    internal class ApiService
     {
-
         private readonly HttpClient httpClient = new();
+
+        public ApiService(LocalPreferencesServices preferencesServices)
+        {
+            var currentUser = preferencesServices.GetUser();
+            if (currentUser != null)
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", currentUser.Token);
+            }
+        }
 
         private static string BuildUrl(string path) => $"http://localhost:3000/{path}";
 
@@ -36,6 +45,13 @@ namespace cli.services
             return Post<Dictionary<string, string>, Project>("projects", new Dictionary<string, string>{
                 {"Name", projectName},
                 {"Repository", githubRepo}
+            });
+        }
+
+        public Task<User> LoginUser(string accessCode)
+        {
+            return Post<Dictionary<string, string>, User>("users", new Dictionary<string, string>{
+                {"AccessCode", accessCode}
             });
         }
     }
