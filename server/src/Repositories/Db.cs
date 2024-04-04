@@ -12,6 +12,7 @@ namespace ReleaseMonkey.src.Repositories
         public Db()
         {
             DotNetEnv.Env.Load();
+            string s = Environment.GetEnvironmentVariable("DB_HOST");
             SqlConnectionStringBuilder builder = new()
             {
                 DataSource = Environment.GetEnvironmentVariable("DB_HOST"),

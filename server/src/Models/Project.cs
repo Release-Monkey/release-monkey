@@ -5,7 +5,6 @@ namespace ReleaseMonkey.Server.Models
     int ProjectId,
     string Name,
     string Repository,
-    string Token,
-    int UserId
+    string Token
   );
 }

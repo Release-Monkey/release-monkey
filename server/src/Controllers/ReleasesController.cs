@@ -29,7 +29,7 @@ namespace ReleaseMonkey.Server.Controller
         public IActionResult Fetch(int id)
         {
             /*return Ok(projects.Find(release => release.Id == id));*/
-            return Ok(releases);
+            return Ok();
         }
 
         [HttpPost]
