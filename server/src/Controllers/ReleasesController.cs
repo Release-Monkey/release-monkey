@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using ReleaseMonkey.Server.Models;
 using ReleaseMonkey.Server.Services;
 
-
-
 namespace ReleaseMonkey.Server.Controller
 {
 
@@ -17,8 +15,6 @@ namespace ReleaseMonkey.Server.Controller
     [Route("releases")]
     public class ReleasesController(ReleasesService releases) : ControllerBase
     {
-        private readonly ReleasesService releases = releases;
-
         [HttpGet]
         public IActionResult Fetch()
         {
