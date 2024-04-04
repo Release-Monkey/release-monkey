@@ -42,7 +42,7 @@ namespace ReleaseMonkey.Server.Controller
         public async Task<IActionResult> Create(CreateProjectRequest body)
         {
             var createdProject = await projects.CreateProject(body.userId, body.projectName, body.repo, new Random().NextDouble().ToString());
-            return CreatedAtRoute("FetchProjectById", new { createdProject.ProjectId }, createdProject);
+            return CreatedAtRoute("FetchProjectById", new { createdProject.id }, createdProject);
         }
 /*
         [HttpPut("{id:int}")]
