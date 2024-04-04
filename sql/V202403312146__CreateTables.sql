@@ -1,6 +1,6 @@
 ﻿USE release_monkey_db;
 
-BEGIN TRANSACTION QUICKDBD
+BEGIN TRANSACTION DBCREATE
 
 CREATE TABLE [User] (
     [UserID] int IDENTITY(1,1) NOT NULL ,
@@ -24,6 +24,15 @@ CREATE TABLE [Project] (
     )
 )
 
+CREATE TABLE [Release] (
+    [ReleaseID] int IDENTITY(1,1) NOT NULL ,
+    [ReleaseName] varchar(200)  NOT NULL ,
+    [ProjectID] int  NOT NULL ,
+    CONSTRAINT [PK_Release] PRIMARY KEY CLUSTERED (
+        [ReleaseID] ASC
+    )
+)
+
 CREATE TABLE [UserProject] (
     [UserProjectID] int IDENTITY(1,1) NOT NULL ,
     [UserID] int  NOT NULL ,
@@ -31,15 +40,6 @@ CREATE TABLE [UserProject] (
     [Role] int  NOT NULL ,
     CONSTRAINT [PK_UserProject] PRIMARY KEY CLUSTERED (
         [UserProjectID] ASC
-    )
-)
-
-CREATE TABLE [Release] (
-    [ReleaseID] int IDENTITY(1,1) NOT NULL ,
-    [ReleaseName] varchar(200)  NOT NULL ,
-    [ProjectID] int  NOT NULL ,
-    CONSTRAINT [PK_Release] PRIMARY KEY CLUSTERED (
-        [ReleaseID] ASC
     )
 )
 
@@ -79,4 +79,4 @@ REFERENCES [User] ([UserID])
 
 ALTER TABLE [ReleaseTester] CHECK CONSTRAINT [FK_ReleaseTester_TesterID]
 
-COMMIT TRANSACTION QUICKDBD
+COMMIT TRANSACTION DBCREATE
