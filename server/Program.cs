@@ -15,6 +15,8 @@ namespace ReleaseMonkey.Server
         builder.Services.AddSingleton<UserProjectsRepository>();
 
         builder.Services.AddSingleton<ProjectsService>();
+        builder.Services.AddSingleton<ReleasesRepository>();
+        builder.Services.AddSingleton<ReleasesService>();
 
         builder.Services.AddControllers().AddJsonOptions(options =>
         {
