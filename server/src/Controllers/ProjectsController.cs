@@ -31,10 +31,28 @@ namespace ReleaseMonkey.Server.Controller
         }
 
         [HttpGet("{id:int}", Name = "FetchProjectById")]
-        public IActionResult Fetch(int id)
+        public async Task<IActionResult> Fetch(int id)
         {
-            /*return Ok(projects.Find(project => project.Id == id));*/
-            return Ok();
+            var currentUser = HttpContext.Features.Get<UserWithToken>()!;
+
+            try
+            {
+                var project = await projects.GetProjectById(id);
+                var releaseMakerIds = projects.GetReleaseMakerUserIds(id);
+
+                if (releaseMakerIds.Contains(currentUser.Id))
+                {
+                    return Ok(project);
+                }
+                else
+                {
+                    return Forbid("Cannot access projects for which you are not the release maker.");
+                }
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost]
