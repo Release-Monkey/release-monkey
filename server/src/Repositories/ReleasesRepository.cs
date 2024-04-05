@@ -10,7 +10,7 @@ namespace ReleaseMonkey.Server.Repositories
         public List<Release> GetAllReleases(Db db)
         {
             List<Release> releases = new List<Release>();
-            string sql = @"SELECT * FROM [Release]";
+            string sql = @"SELECT ReleaseID, ReleaseName, ProjectID FROM [Release]";
             using SqlCommand command = new(sql, db.Connection);
             
             using SqlDataReader reader = db.ExecuteReader(command);
@@ -25,7 +25,7 @@ namespace ReleaseMonkey.Server.Repositories
         public List<Release> GetReleasesByProjectId(Db db, int projectId)
         {
             List<Release> releases = new List<Release>();
-            string sql = @"SELECT * FROM [Release] WHERE ProjectID=@ProjectID";
+            string sql = @"SELECT ReleaseID, ReleaseName, ProjectID FROM [Release] WHERE ProjectID=@ProjectID";
             using SqlCommand command = new(sql, db.Connection);
             command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
 
@@ -40,7 +40,7 @@ namespace ReleaseMonkey.Server.Repositories
 
         public Release GetReleasesById(Db db, int releaseId)
         {
-            string sql = @"SELECT * FROM [Release] WHERE ReleaseID=@ReleaseID";
+            string sql = @"SELECT ReleaseID, ReleaseName, ProjectID FROM [Release] WHERE ReleaseID=@ReleaseID";
             using SqlCommand command = new(sql, db.Connection);
             command.Parameters.Add("@ReleaseID", SqlDbType.Int).Value = releaseId;
 

@@ -12,7 +12,7 @@ namespace ReleaseMonkey.Server.Repositories
         public List<UserProject> GetTestersForProject(SqlTransaction transaction,Db db, int projectId)
         {
             List<UserProject> userProjects = new List<UserProject>();
-            string sql = @"SELECT * FROM [UserProject] WHERE ProjectID=@ProjectID AND (Role=1 OR Role=2)";
+            string sql = @"SELECT UserProjectID, UserID, ProjectID, Role FROM [UserProject] WHERE ProjectID=@ProjectID AND (Role=1 OR Role=2)";
             using SqlCommand command = new(sql, db.Connection, transaction);
             command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
 
@@ -28,7 +28,7 @@ namespace ReleaseMonkey.Server.Repositories
         public List<UserProject> GetTestersForProject(Db db, int projectId)
         {
             List<UserProject> userProjects = new List<UserProject>();
-            string sql = @"SELECT * FROM [UserProject] WHERE ProjectID=@ProjectID AND (Role=1 OR Role=2)";
+            string sql = @"SELECT UserProjectID, UserID, ProjectID, Role FROM [UserProject] WHERE ProjectID=@ProjectID AND (Role=1 OR Role=2)";
             using SqlCommand command = new(sql, db.Connection);
             command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
 
