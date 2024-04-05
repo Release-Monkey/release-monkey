@@ -32,6 +32,6 @@ jobs:
         FLYWAY_USER: ${{ secrets.DB_DEV_USERNAME }}
         FLYWAY_PASSWORD: ${{ secrets.DB_DEV_PASSWORD }}
       run: |
-        flyway repair -X -locations=filesystem:/sql/dev
-        flyway info -X -locations=filesystem:/sql/dev
-        flyway migrate -X -locations=filesystem:/sql/dev
+        flyway repair -X -locations=sql/dev
+        flyway info -X -locations=sql/dev
+        flyway migrate -X -locations=sql/dev
