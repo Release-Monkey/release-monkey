@@ -8,8 +8,8 @@ on:
     branches:
       - main
 
-    paths:
-      - 'sql/dev/*'
+    # paths:
+    #   - 'sql/dev/*'
   
 env:
   FLYWAY_VERSION: 9.16.3
@@ -32,6 +32,6 @@ jobs:
         FLYWAY_USER: ${{ secrets.DB_DEV_USERNAME }}
         FLYWAY_PASSWORD: ${{ secrets.DB_DEV_PASSWORD }}
       run: |
-        flyway repair
+        flyway repair -X -locations=filesystem:/sql/dev
         flyway info -X -locations=filesystem:/sql/dev
         flyway migrate -X -locations=filesystem:/sql/dev
