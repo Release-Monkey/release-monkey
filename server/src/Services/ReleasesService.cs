@@ -31,7 +31,8 @@ namespace ReleaseMonkey.Server.Services
                 {
                     Release release = releases.InsertRelease(transaction, db, releaseName, projectId);
                     List<UserProject> userProjectList = userProjects.GetTestersForProject(transaction, db, projectId);
-                    foreach (UserProject userProject in userProjectList)
+                    List<UserProject> testerList = userProjectList.Where(u => u.Role == 1).ToList();
+                    foreach (UserProject userProject in testerList)
                     {
                         releaseTesters.InsertReleaseTester(transaction, db, release.Id, userProject.UserId);
                     }
