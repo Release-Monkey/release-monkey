@@ -38,7 +38,7 @@ namespace ReleaseMonkey.Server.Repositories
             return releases;
         }
 
-        public Release GetReleasesById(Db db, int releaseId)
+        public Release GetReleaseById(Db db, int releaseId)
         {
             string sql = @"SELECT ReleaseID, ReleaseName, ProjectID FROM [Release] WHERE ReleaseID=@ReleaseID";
             using SqlCommand command = new(sql, db.Connection);

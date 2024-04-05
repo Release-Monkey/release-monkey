@@ -36,7 +36,7 @@ namespace ReleaseMonkey.Server.Controller
         [HttpGet("project/{id:int}", Name = "FetchReleaseByProjectId")]
         public IActionResult FetchByProjectId(int id)
         {
-            return Ok(releases.GetReleaseByProjectId(id));
+            return Ok(releases.GetReleasesByProjectId(id));
         }
 
         [HttpPost]

@@ -74,5 +74,32 @@ namespace ReleaseMonkey.Server.Repositories
                 throw new KeyNotFoundException($"There is no such user with email {emailAddress}.");
             }
         }
+
+        public List<String> GetUserEmailsByIds(SqlTransaction transaction, Db db, List<int> userIds)
+        {
+            string sql = @"SELECT EmailAddress
+                           FROM [User] WHERE UserID IN ({0})";
+
+            using SqlCommand command = new(sql, db.Connection, transaction);
+
+            var idParameterList = new List<string>();
+            var index = 0;
+            foreach (var userId in userIds)
+            {
+                var paramName = "@idParam" + index;
+                command.Parameters.AddWithValue(paramName, userId);
+                idParameterList.Add(paramName);
+                index++;
+            }
+            command.CommandText = String.Format(sql, string.Join(",", idParameterList));
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            List<String> emails = new List<String>();
+            while (reader.Read())
+            {
+                 emails.Add(reader.GetString("EmailAddress"));
+            }
+            return emails;
+        }
     }
 }
