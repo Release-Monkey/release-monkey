@@ -1,0 +1,5 @@
+DB_HOST=localhost
+DB_USER=admin
+DB_PASS=password
+DB_NAME=release_monkey_db
+DB_TRUST_CERT=true
