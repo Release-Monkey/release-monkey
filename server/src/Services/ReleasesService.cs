@@ -6,7 +6,7 @@ using System.Transactions;
 
 namespace ReleaseMonkey.Server.Services
 {
-    public class ReleasesService(ReleasesRepository releases, Db db)
+    public class ReleasesService(ReleasesRepository releases, ReleaseTestersRepository releaseTesters, UserProjectsRepository userProjects, Db db)
     {
         public Task<List<Release>> GetAllReleases() 
         {
@@ -30,6 +30,12 @@ namespace ReleaseMonkey.Server.Services
                 try
                 {
                     Release release = releases.InsertRelease(transaction, db, releaseName, projectId);
+                    List<UserProject> userProjectList = userProjects.GetTestersForProject(transaction, db, projectId);
+                    foreach (UserProject userProject in userProjectList)
+                    {
+                        releaseTesters.InsertReleaseTester(transaction, db, release.Id, userProject.UserId);
+                    }
+
                     transaction.Commit();
                     return Task.FromResult(release);
                 }

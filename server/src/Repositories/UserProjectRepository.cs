@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using ReleaseMonkey.Server.Models;
 using ReleaseMonkey.src.Repositories;
@@ -8,6 +9,38 @@ namespace ReleaseMonkey.Server.Repositories
 {
     public class UserProjectsRepository
     {
+        public List<UserProject> GetTestersForProject(SqlTransaction transaction,Db db, int projectId)
+        {
+            List<UserProject> userProjects = new List<UserProject>();
+            string sql = @"SELECT * FROM [UserProject] WHERE ProjectID=@ProjectID AND (Role=1 OR Role=2)";
+            using SqlCommand command = new(sql, db.Connection, transaction);
+            command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
+
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            while (reader.Read())
+            {
+                userProjects.Add(new UserProject(reader.GetInt32("UserProjectID"), reader.GetInt32("UserID"), reader.GetInt32("ProjectID"), reader.GetInt32("Role")));
+            }
+            return userProjects;
+        }
+
+        public List<UserProject> GetTestersForProject(Db db, int projectId)
+        {
+            List<UserProject> userProjects = new List<UserProject>();
+            string sql = @"SELECT * FROM [UserProject] WHERE ProjectID=@ProjectID AND (Role=1 OR Role=2)";
+            using SqlCommand command = new(sql, db.Connection);
+            command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
+
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            while (reader.Read())
+            {
+                userProjects.Add(new UserProject(reader.GetInt32("UserProjectID"), reader.GetInt32("UserID"), reader.GetInt32("ProjectID"), reader.GetInt32("Role")));
+            }
+            return userProjects;
+        }
+
         public UserProject InsertUserProject(SqlTransaction transaction, Db db, int userId, int projectID, int role)
         {
             string sql = @" INSERT INTO[UserProject](UserId, ProjectID, Role)
