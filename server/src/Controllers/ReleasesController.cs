@@ -22,10 +22,15 @@ namespace ReleaseMonkey.Server.Controller
         }
 
         [HttpGet("{id:int}", Name = "FetchReleaseById")]
-        public IActionResult Fetch(int id)
+        public IActionResult FetchById(int id)
         {
-            /*return Ok(projects.Find(release => release.Id == id));*/
-            return Ok();
+            return Ok(releases.GetReleaseById(id));
+        }
+
+        [HttpGet("project/{id:int}", Name = "FetchReleaseByProjectId")]
+        public IActionResult FetchByProjectId(int id)
+        {
+            return Ok(releases.GetReleaseByProjectId(id));
         }
 
         [HttpPost]

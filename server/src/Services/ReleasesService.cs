@@ -12,6 +12,17 @@ namespace ReleaseMonkey.Server.Services
         {
             return Task.FromResult(releases.GetAllReleases(db));
         }
+
+        public Task<List<Release>> GetReleaseByProjectId(int projectId)
+        {
+            return Task.FromResult(releases.GetReleasesByProjectId(db, projectId));
+        }
+
+        public Task<Release> GetReleaseById(int releaseId)
+        {
+            return Task.FromResult(releases.GetReleasesById(db, releaseId));
+        }
+
         public Task<Release> CreateRelease(string releaseName, int projectId)
         {
             using (SqlTransaction transaction = db.Connection.BeginTransaction())
