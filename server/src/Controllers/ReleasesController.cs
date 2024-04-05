@@ -18,7 +18,7 @@ namespace ReleaseMonkey.Server.Controller
         [HttpGet]
         public IActionResult Fetch()
         {
-            return Ok(releases);
+            return Ok(releases.GetAllReleases());
         }
 
         [HttpGet("{id:int}", Name = "FetchReleaseById")]

@@ -8,6 +8,10 @@ namespace ReleaseMonkey.Server.Services
 {
     public class ReleasesService(ReleasesRepository releases, Db db)
     {
+        public Task<List<Release>> GetAllReleases() 
+        {
+            return Task.FromResult(releases.GetAllReleases(db));
+        }
         public Task<Release> CreateRelease(string releaseName, int projectId)
         {
             using (SqlTransaction transaction = db.Connection.BeginTransaction())
