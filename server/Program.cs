@@ -35,7 +35,6 @@ namespace ReleaseMonkey.Server
                 builder.Services.AddSingleton<ReleasesService>();
                 builder.Services.AddSingleton<ReleaseTestersService>();
 
-
                 builder.Services.AddControllers().AddJsonOptions(options =>
                 {
                     // For PascalCase naming for returned object properties.
