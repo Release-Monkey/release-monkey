@@ -47,13 +47,6 @@ namespace ReleaseMonkey.Server.Controller
             return Ok(releaseTesters.GetReleaseTestersByReleaseId(id));
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(CreateReleaseTesterRequest body)
-        {
-            var createdReleaseTester = await releaseTesters.CreateReleaseTester(body.ReleaseId, body.TesterId);
-            return CreatedAtRoute("FetchReleaseTesterById", new { createdReleaseTester.Id }, createdReleaseTester);
-        }
-
         [HttpPut]
         public async Task<IActionResult> Update(UpdateReleaseTesterRequest body)
         {
