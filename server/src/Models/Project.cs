@@ -4,6 +4,7 @@ namespace ReleaseMonkey.Server.Models
   (
     int Id,
     string Name,
-    string Repo
+    string Repo,
+    string Token
   );
 }

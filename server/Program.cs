@@ -24,12 +24,15 @@ namespace ReleaseMonkey.Server
                 builder.Services.AddSingleton(usersRepository);
                 builder.Services.AddSingleton<ProjectsRepository>();
                 builder.Services.AddSingleton<UserProjectsRepository>();
+                builder.Services.AddSingleton<ReleasesRepository>();
+                builder.Services.AddSingleton<ReleaseTestersRepository>();
 
                 // TODO: Read secret from envrinment variable and revoke this one.
                 builder.Services.AddSingleton(githubService);
 
                 builder.Services.AddSingleton<UsersService>();
                 builder.Services.AddSingleton<ProjectsService>();
+                builder.Services.AddSingleton<ReleasesService>();
 
                 builder.Services.AddControllers().AddJsonOptions(options =>
                 {
