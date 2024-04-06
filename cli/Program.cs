@@ -46,7 +46,7 @@ internal class Program
                     break;
                 case "project":
                     await commands.PrintProject();
-                    break;                 
+                    break;
                 case "list-projects":
                     await commands.ListProjects();
                     break;
@@ -82,6 +82,19 @@ internal class Program
                     else
                     {
                         Console.WriteLine("Please provide the id of the release to approve.");
+                    }
+                    break;
+                case "release-key":
+                    await commands.PrintReleaseKey();
+                    break;
+                case "load-release-key":
+                    if (args.Length > 1)
+                    {
+                        await commands.LoadReleaseKey(args[1]);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please provide a release key to load.");
                     }
                     break;
                 case "help":

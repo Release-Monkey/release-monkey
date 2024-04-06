@@ -7,4 +7,6 @@ namespace cli.models
     internal record Project(int Id, string Name, string Repo);
 
     internal record Release(int Id, string ReleaseName, int ProjectId);
+
+    internal record ReleaseKey(User User, Project Project);
 }
