@@ -1,14 +1,23 @@
 ﻿using cli.models;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 
 namespace cli.services
 {
-    internal class ApiService(AuthService AuthService)
+    internal class ApiService
     {
-
         private readonly HttpClient httpClient = new();
+
+        public ApiService(LocalPreferencesServices preferencesServices)
+        {
+            var currentUser = preferencesServices.GetUser();
+            if (currentUser != null)
+            {
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", currentUser.Token);
+            }
+        }
 
         private static string BuildUrl(string path) => $"http://localhost:3000/{path}";
 
@@ -31,12 +40,32 @@ namespace cli.services
             }
         }
 
+        private async Task<T> Get<T>(string path) where T : class
+        {
+            var response = await httpClient.GetAsync(BuildUrl(path));
+            response.EnsureSuccessStatusCode();
+            var stringResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(stringResponse)!;
+        }
+
         public Task<Project> CreateProject(string projectName, string githubRepo)
         {
             return Post<Dictionary<string, string>, Project>("projects", new Dictionary<string, string>{
-                {"Name", projectName},
-                {"Repository", githubRepo}
+                {"ProjectName", projectName},
+                {"Repo", githubRepo}
             });
+        }
+
+        public Task<User> LoginUser(string accessCode)
+        {
+            return Post<Dictionary<string, string>, User>("users", new Dictionary<string, string>{
+                {"AccessCode", accessCode}
+            });
+        }
+
+        public Task<Project> GetProjectById(int projectId)
+        {
+            return Get<Project>($"projects/{projectId}");            
         }
     }
 

@@ -17,7 +17,7 @@ namespace ReleaseMonkey.Server.Services
                 try
                 {
                     Project project = projects.InsertProject(transaction, db, projectName, githubRepo, token);
-                    userProjects.InsertUserProject(transaction, db, userId, project.id, 1);
+                    userProjects.InsertUserProject(transaction, db, userId, project.Id, 1);
                     transaction.Commit();
                     return Task.FromResult(project);
                 }
@@ -32,6 +32,16 @@ namespace ReleaseMonkey.Server.Services
         public Task<List<Project>> FetchProjects(Modifier modifier)
         {
             return Task.FromResult(projects.SelectProjects(modifier));
+        }
+      
+        public Task<Project> GetProjectById(int projectId)
+        {
+            return Task.FromResult(projects.GetProjectById(db, projectId));
+        }
+
+        public List<int> GetReleaseMakerUserIds(int projectId)
+        {
+            return userProjects.GetUserIdsWithRole(db, 1, projectId);
         }
     }
 }

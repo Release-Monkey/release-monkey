@@ -5,6 +5,8 @@ on:
       - closed
     branches:
       - main
+    paths:
+      - 'terraform/*'
 
 permissions:
   id-token: write # This is required for aws oidc connection

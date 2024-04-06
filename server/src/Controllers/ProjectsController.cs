@@ -9,15 +9,14 @@ namespace ReleaseMonkey.Server.Controller
 {
     public record CreateProjectRequest
     (
-        int userId,
-        string projectName,
-        string repo
+        string ProjectName,
+        string Repo
     );
 
     public record UpdateProjectRequest
     (
-        string projectName,
-        string repo
+        string ProjectName,
+        string Repo
     );
 
     [ApiController]
@@ -41,41 +40,60 @@ namespace ReleaseMonkey.Server.Controller
         }
 
         [HttpGet("{id:int}", Name = "FetchProjectById")]
-        public IActionResult Fetch(int id)
+        public async Task<IActionResult> Fetch(int id)
         {
-            /*return Ok(projects.Find(project => project.Id == id));*/
-            return Ok();
+            var currentUser = HttpContext.Features.Get<UserWithToken>()!;
+
+            try
+            {
+                var project = await projects.GetProjectById(id);
+                var releaseMakerIds = projects.GetReleaseMakerUserIds(id);
+
+                if (releaseMakerIds.Contains(currentUser.Id))
+                {
+                    return Ok(project);
+                }
+                else
+                {
+                    return Forbid("Cannot access projects for which you are not the release maker.");
+                }
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateProjectRequest body)
         {
-            var createdProject = await projects.CreateProject(body.userId, body.projectName, body.repo, new Random().NextDouble().ToString());
-            return CreatedAtRoute("FetchProjectById", new { createdProject.id }, createdProject);
+            var user = HttpContext.Features.Get<UserWithToken>()!;
+            var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, user.Token);
+            return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
         }
-/*
-        [HttpPut("{id:int}")]
-        public IActionResult Put(int id, UpdateProjectRequest payload)
-        {
-            var index = projects.FindIndex(project => project.Id == id);
+        /*
+                [HttpPut("{id:int}")]
+                public IActionResult Put(int id, UpdateProjectRequest payload)
+                {
+                    var index = projects.FindIndex(project => project.Id == id);
 
-            if (index == -1) return NotFound();
+                    if (index == -1) return NotFound();
 
-            projects[index] = new Project(
-              id,
-              payload.Name,
-              payload.Repository
-            );
+                    projects[index] = new Project(
+                      id,
+                      payload.Name,
+                      payload.Repository
+                    );
 
-            return NoContent();
-        }
+                    return NoContent();
+                }
 
-        [HttpDelete("{id:int}")]
-        public IActionResult Delete(int id)
-        {
-            projects.RemoveAll(project => project.Id == id);
+                [HttpDelete("{id:int}")]
+                public IActionResult Delete(int id)
+                {
+                    projects.RemoveAll(project => project.Id == id);
 
-            return NoContent();
-        }*/
+                    return NoContent();
+                }*/
     }
 }
