@@ -65,7 +65,20 @@ namespace cli.services
 
         public Task<Project> GetProjectById(int projectId)
         {
-            return Get<Project>($"projects/{projectId}");            
+            return Get<Project>($"projects/{projectId}");
+        }
+
+        public Task<Release> CreateRelease(string releaseName, int projectId)
+        {
+            return Post<Dictionary<string, object>, Release>("releases", new Dictionary<string, object>{
+                {"Name", releaseName},
+                {"ProjectId", projectId}
+            });
+        }
+
+        public Task<List<Release>> FetchReleases(int projectId)
+        {
+            return Get<List<Release>>($"releases/project/{projectId}");
         }
     }
 
