@@ -101,5 +101,32 @@ namespace ReleaseMonkey.Server.Repositories
             }
             return emails;
         }
+
+        public List<String> GetUserEmailsByIds(Db db, List<int> userIds)
+        {
+            string sql = @"SELECT EmailAddress
+                           FROM [User] WHERE UserID IN ({0})";
+
+            using SqlCommand command = new(sql, db.Connection);
+
+            var idParameterList = new List<string>();
+            var index = 0;
+            foreach (var userId in userIds)
+            {
+                var paramName = "@idParam" + index;
+                command.Parameters.AddWithValue(paramName, userId);
+                idParameterList.Add(paramName);
+                index++;
+            }
+            command.CommandText = String.Format(sql, string.Join(",", idParameterList));
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            List<String> emails = new List<String>();
+            while (reader.Read())
+            {
+                emails.Add(reader.GetString("EmailAddress"));
+            }
+            return emails;
+        }
     }
 }
