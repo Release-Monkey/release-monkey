@@ -3,12 +3,12 @@ name: Flyway Migrations Grad
 on:
 
   pull_request:
-    types:
-      - closed
+    # types:
+    #   - closed
     branches:
       - main
-    paths:
-      - 'sql/grad/*'
+    # paths:
+    #   - 'sql/grad/*'
   
 env:
   FLYWAY_VERSION: 9.16.3

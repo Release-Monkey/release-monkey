@@ -3,12 +3,12 @@ name: Flyway Migrations Dev
 on:
 
   pull_request:
-    types:
-      - closed
+    # types:
+    #   - closed
     branches:
       - main
-    paths:
-      - 'sql/dev/*'
+    # paths:
+    #   - 'sql/dev/*'
   
 env:
   FLYWAY_VERSION: 9.16.3
