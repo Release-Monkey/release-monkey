@@ -27,5 +27,15 @@ namespace ReleaseMonkey.Server.Services
                 }
             }
         }
+
+        public Task<Project> GetProjectById(int projectId)
+        {
+            return Task.FromResult(projects.GetProjectById(db, projectId));
+        }
+
+        public List<int> GetReleaseMakerUserIds(int projectId)
+        {
+            return userProjects.GetUserIdsWithRole(db, 1, projectId);
+        }
     }
 }

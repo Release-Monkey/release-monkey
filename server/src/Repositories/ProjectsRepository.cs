@@ -61,6 +61,25 @@ namespace ReleaseMonkey.Server.Repositories
 
             }
         }
+
+        public Project GetProjectById(Db db, int projectId)
+        {
+            string sql = @"SELECT ProjectName, Repo FROM [Project]
+                            WHERE ProjectID=@ProjectID";
+
+            using SqlCommand command = new(sql, db.Connection);
+            command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
+
+            using SqlDataReader reader = db.ExecuteReader(command);
+            if (reader.Read())
+            {
+                return new Project(projectId, reader.GetString("ProjectName"), reader.GetString("Repo"));
+            }
+            else
+            {
+                throw new KeyNotFoundException($"There is no such project with id {projectId}.");
+            }
+        }
     }
 }
 

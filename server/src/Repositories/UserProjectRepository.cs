@@ -58,6 +58,26 @@ namespace ReleaseMonkey.Server.Repositories
                 
             }
         }
+
+        public List<int> GetUserIdsWithRole(Db db, int role, int projectId)
+        {
+            string sql = @"SELECT UserID FROM UserProject
+                            WHERE Role=@Role AND ProjectID=@ProjectID";
+
+            using SqlCommand command = new(sql, db.Connection);
+            command.Parameters.Add("@Role", SqlDbType.Int).Value = role;
+            command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
+
+            List<int> output = [];
+            using SqlDataReader reader = db.ExecuteReader(command);
+            while(reader.Read())
+            {
+                output.Add(reader.GetInt32("UserID"));
+            }
+
+            return output;
+        }
+
     }
 }
 

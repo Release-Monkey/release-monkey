@@ -43,3 +43,16 @@ The executable file can be found in folder `cli\bin\Release\net8.0\publish`
 - login as admin
 - Password: 
 
+## ERD Design
+    QuickDBD was used for ERD Design and Generation, the code for it can be found in the documentation/Diagrams folder
+
+## Enums Used
+ - Role
+    - 0 = Releaser
+    - 1 = Tester
+    - 2 = Both
+ - State
+    - 0 = Accepted
+    - 1 = Rejected
+    - 2 = Pending
+

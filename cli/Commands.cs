@@ -22,6 +22,7 @@ namespace cli
         public Task Logout()
         {
             preferencesServices.ClearUser();
+            preferencesServices.ClearProject();
             Console.WriteLine("Signed out. You will have to sign in again to publish releases.");
             return Task.FromResult<object?>(null);
         }
@@ -46,7 +47,8 @@ namespace cli
             try
             {
                 var project = await apiService.CreateProject(projectName, githubRepo);
-                Console.WriteLine($"Project has been created. Project id is {project.Id}");
+                preferencesServices.SetProject(project);
+                Console.WriteLine($"Project has been created. Project id is {project.Id}.");
             }
             catch (ApiException e)
             {
@@ -54,7 +56,36 @@ namespace cli
             }
         }
 
-        public Task SetProject(string projectId) { throw new NotImplementedException(); }
+        public async Task SetProject(string projectId)
+        {
+            try
+            {
+                var parsedProjectId = int.Parse(projectId);
+                var project = await apiService.GetProjectById(parsedProjectId);
+                preferencesServices.SetProject(project);
+                Console.WriteLine($"Project has been set to {project.Name}, publishing {project.Repo}.");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Please enter a valid project id.");
+            }
+
+        }
+
+        public Task PrintProject()
+        {
+            var project = preferencesServices.GetProject();
+            if (project == null)
+            {
+                Console.WriteLine("No project set. Either create a new project or set project with 'set-project PROJECT_ID'.");
+            }
+            else
+            {
+                Console.WriteLine($"Current project is {project!.Name}, publishing {project.Repo}.");
+            }
+
+            return Task.FromResult<object?>(null);
+        }
 
         public Task ListProjects() { throw new NotImplementedException(); }
 
