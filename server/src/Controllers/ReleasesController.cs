@@ -42,7 +42,6 @@ namespace ReleaseMonkey.Server.Controller
         [HttpPost]
         public async Task<IActionResult> Create(CreateReleaseRequest body)
         {
-            var user = HttpContext.Features.Get<UserWithToken>()!;
             var createdRelease = await releases.CreateRelease(body.Name, body.ProjectId);
             return CreatedAtRoute("FetchReleaseById", new { createdRelease.Id }, createdRelease);
         }
