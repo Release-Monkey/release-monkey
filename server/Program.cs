@@ -33,6 +33,7 @@ namespace ReleaseMonkey.Server
                 builder.Services.AddSingleton<UsersService>();
                 builder.Services.AddSingleton<ProjectsService>();
                 builder.Services.AddSingleton<ReleasesService>();
+                builder.Services.AddSingleton<ReleaseTestersService>();
 
                 builder.Services.AddControllers().AddJsonOptions(options =>
                 {
