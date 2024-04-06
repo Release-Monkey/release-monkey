@@ -73,7 +73,7 @@ namespace ReleaseMonkey.Server.Repositories
             using SqlDataReader reader = db.ExecuteReader(command);
             if (reader.Read())
             {
-                return new Project(projectId, reader.GetString("ProjectName"), reader.GetString("Repo"));
+                return new Project(projectId, reader.GetString("ProjectName"), reader.GetString("Repo"), reader.GetString("Token"));
             }
             else
             {
