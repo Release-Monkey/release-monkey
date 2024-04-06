@@ -91,9 +91,34 @@ namespace cli
 
         public Task AddTesters(List<string> testerEmails) { throw new NotImplementedException(); }
 
-        public Task CreateRelease(string releaseName) { throw new NotImplementedException(); }
+        public async Task CreateRelease(string releaseName)
+        {
+            var currentProject = preferencesServices.GetProject();
+            if (currentProject == null)
+            {
+                Console.WriteLine("No project set. Either create a new project or set project with 'set-project PROJECT_ID'.");
+            }
+            else
+            {
+                var release = await apiService.CreateRelease(releaseName, currentProject.Id);
+                Console.WriteLine($"New release, {release.ReleaseName}, has been created for {currentProject.Name}. Your testers will be notified via email to begin testing.");
+            }
+        }
 
-        public Task ListReleases() { throw new NotImplementedException(); }
+        public async Task ListReleases()
+        {
+            var currentProject = preferencesServices.GetProject();
+            if (currentProject == null)
+            {
+                Console.WriteLine("No project set. Either create a new project or set project with 'set-project PROJECT_ID'.");
+            }
+            else
+            {
+                var releases = await apiService.FetchReleases(currentProject.Id);
+                Console.WriteLine($"Releases for {currentProject.Name}:");
+                releases.ForEach(release => Console.WriteLine($"{release.ReleaseName} ({release.Id})"));
+            }
+        }
 
         public Task ApproveRelease(string releaseId) { throw new NotImplementedException(); }
 

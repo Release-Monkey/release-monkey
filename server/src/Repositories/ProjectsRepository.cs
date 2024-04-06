@@ -64,7 +64,7 @@ namespace ReleaseMonkey.Server.Repositories
 
         public Project GetProjectById(Db db, int projectId)
         {
-            string sql = @"SELECT ProjectName, Repo FROM [Project]
+            string sql = @"SELECT ProjectName, Repo, Token FROM [Project]
                             WHERE ProjectID=@ProjectID";
 
             using SqlCommand command = new(sql, db.Connection);
