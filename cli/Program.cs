@@ -35,7 +35,7 @@ internal class Program
                     }
                     break;
                 case "set-project":
-                    if (args.Length > 0)
+                    if (args.Length > 1)
                     {
                         await commands.SetProject(args[1]);
                     }
@@ -44,6 +44,9 @@ internal class Program
                         Console.WriteLine("Please provide the project id.");
                     }
                     break;
+                case "project":
+                    await commands.PrintProject();
+                    break;                 
                 case "list-projects":
                     await commands.ListProjects();
                     break;

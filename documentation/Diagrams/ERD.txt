@@ -1,0 +1,39 @@
+User
+-
+UserID PK int
+Name varchar(200)
+EmailAddress varchar(200)
+
+
+Project
+-
+ProjectID PK int
+ProjectName varchar(200)
+Repo varchar(200) UNIQUE
+Token varchar(200)
+
+
+UserProject
+----
+UserProjectID PK int
+UserID int FK >- User.UserID
+ProjectID int FK >- Project.ProjectID
+Role int
+
+
+Release
+----
+ReleaseID PK int
+ReleaseName varchar(200)
+ProjectID int FK >- Project.ProjectID
+
+
+ReleaseTester
+-
+ReleaseTesterID PK int
+ReleaseID int FK >- Release.ReleaseID
+TesterID int FK >- User.UserID
+State int
+Comment nvarchar(200)
+
+

@@ -18,14 +18,25 @@ namespace ReleaseMonkey.Server.Controller
         [HttpGet]
         public IActionResult Fetch()
         {
-            return Ok(releases);
+            return Ok(releases.GetAllReleases());
         }
 
         [HttpGet("{id:int}", Name = "FetchReleaseById")]
-        public IActionResult Fetch(int id)
+        public IActionResult FetchById(int id)
         {
-            /*return Ok(projects.Find(release => release.Id == id));*/
-            return Ok();
+            try { 
+                return Ok(releases.GetReleaseById(id));
+            }
+            catch(KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpGet("project/{id:int}", Name = "FetchReleaseByProjectId")]
+        public IActionResult FetchByProjectId(int id)
+        {
+            return Ok(releases.GetReleasesByProjectId(id));
         }
 
         [HttpPost]

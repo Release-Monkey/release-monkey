@@ -41,6 +41,29 @@ namespace cli.services
             SaveCache();
         }
 
+        public void SetProject(Project project)
+        {
+            cache["Project"] = JsonSerializer.Serialize(project);
+            SaveCache();            
+        }
+
+        public Project? GetProject()
+        {
+            if (cache.TryGetValue("Project", out object? value))
+            {
+                return JsonSerializer.Deserialize<Project>(value.ToString()!);
+            }
+            {
+                return null;
+            }
+        }
+
+        public void ClearProject()
+        {
+            cache.Remove("Project");
+            SaveCache();
+        }        
+
         private void SaveCache()
         {
             SaveToPreferencesFile(JsonSerializer.Serialize(cache));

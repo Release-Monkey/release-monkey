@@ -40,11 +40,19 @@ namespace cli.services
             }
         }
 
+        private async Task<T> Get<T>(string path) where T : class
+        {
+            var response = await httpClient.GetAsync(BuildUrl(path));
+            response.EnsureSuccessStatusCode();
+            var stringResponse = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(stringResponse)!;
+        }
+
         public Task<Project> CreateProject(string projectName, string githubRepo)
         {
             return Post<Dictionary<string, string>, Project>("projects", new Dictionary<string, string>{
-                {"Name", projectName},
-                {"Repository", githubRepo}
+                {"ProjectName", projectName},
+                {"Repo", githubRepo}
             });
         }
 
@@ -53,6 +61,11 @@ namespace cli.services
             return Post<Dictionary<string, string>, User>("users", new Dictionary<string, string>{
                 {"AccessCode", accessCode}
             });
+        }
+
+        public Task<Project> GetProjectById(int projectId)
+        {
+            return Get<Project>($"projects/{projectId}");            
         }
     }
 
