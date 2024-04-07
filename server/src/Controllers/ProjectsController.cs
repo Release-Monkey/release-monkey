@@ -58,6 +58,9 @@ namespace ReleaseMonkey.Server.Controller
     [HttpPost]
     public async Task<IActionResult> Create(CreateProjectRequest body)
     {
+      var user = HttpContext.Features.Get<UserWithToken>()!;
+      var userRepos = await githubService.ListRepos(user.Token);
+
       if (userRepos.Contains(body.Repo))
       {
         var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, user.Token);
