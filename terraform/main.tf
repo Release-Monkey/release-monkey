@@ -117,7 +117,7 @@ resource "aws_instance" "release_monkey_instance" {
   # Associate the instance with an existing key pair for SSH access
   key_name = "release_monkey_ec2_key_pair"
 
-  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstance" })
+  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstanceDev" })
 }
 
 resource "aws_eip" "lb" {
@@ -137,7 +137,7 @@ resource "aws_instance" "release_monkey_instance-grads" {
   # Associate the instance with an existing key pair for SSH access
   key_name = "release_monkey_ec2_key_pair"
 
-  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstance" })
+  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstanceGrad" })
 }
 
 resource "aws_eip" "lb-grad" {
