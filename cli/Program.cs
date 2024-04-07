@@ -6,6 +6,18 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
+        try
+        {
+            await ParseArgs(args);
+        }
+        catch (ApiException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    private static async Task ParseArgs(string[] args)
+    {
         LocalPreferencesServices localPreferencesServices = new();
         ApiService apiService = new(localPreferencesServices);
         GithubService githubService = new("Iv1.2a4a99768f6b514e", 30001);
@@ -46,7 +58,7 @@ internal class Program
                     break;
                 case "project":
                     await commands.PrintProject();
-                    break;                 
+                    break;
                 case "list-projects":
                     await commands.ListProjects();
                     break;
@@ -82,6 +94,19 @@ internal class Program
                     else
                     {
                         Console.WriteLine("Please provide the id of the release to approve.");
+                    }
+                    break;
+                case "release-key":
+                    await commands.PrintReleaseKey();
+                    break;
+                case "load-release-key":
+                    if (args.Length > 1)
+                    {
+                        await commands.LoadReleaseKey(args[1]);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please provide a release key to load.");
                     }
                     break;
                 case "help":

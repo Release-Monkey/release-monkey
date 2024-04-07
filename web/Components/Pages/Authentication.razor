@@ -1,0 +1,51 @@
+@page "/auth"
+
+@using Microsoft.AspNetCore.WebUtilities
+
+@inject Microsoft.JSInterop.IJSRuntime JSRuntime
+@inject NavigationManager navigationManager
+@inject Repository.User userRepository
+
+@rendermode InteractiveServer
+
+<PageTitle>Auth</PageTitle>
+
+<main class="flex justify-center items-center h-screen">
+    <section class="flex flex-col items-center gap-y-4">
+        <h1 class="text-xl">Release Monkey</h1>
+        <a href="@AuthorizeUrl()" role="button" class="rounded py-2 px-4 bg-blue-500 text-white">Continue with GitHub</a>
+    </section>
+</main>
+
+@code {
+    private string accessCode;
+    private string accessToken;
+
+    protected override async Task OnInitializedAsync ()
+    {
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        var parameters = QueryHelpers.ParseQuery(uri.Query);
+
+        if (!parameters.ContainsKey("code")) return;
+
+        accessCode = parameters["code"]!;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        if (string.IsNullOrEmpty(accessCode)) return;
+
+        accessToken = await userRepository.FetchAccessToken(accessCode);
+        await userRepository.CacheAccessToken(accessToken);
+    }
+
+    public string AuthorizeUrl ()
+    {
+        var clientId = Environment.GetEnvironmentVariable("GITHUB_CLIENT_ID");
+        var redirect = Environment.GetEnvironmentVariable("GITHUB_REDIRECT_URL");
+
+        return $"https://github.com/login/oauth/authorize?client_id={clientId}&redirect={redirect}&scope=repo";
+    }
+}

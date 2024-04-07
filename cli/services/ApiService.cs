@@ -29,23 +29,29 @@ namespace cli.services
       var response = await httpClient.PostAsync(BuildUrl(path), content);
       var stringResponse = await response.Content.ReadAsStringAsync();
 
-      if (response.StatusCode >= HttpStatusCode.OK && response.StatusCode <= HttpStatusCode.PartialContent)
+      if (response.IsSuccessStatusCode)
       {
         return JsonSerializer.Deserialize<R>(stringResponse)!;
       }
       else
       {
-        // TODO: Do proper error reporting.
-        throw new ApiException($"{stringResponse}: Status code {response.StatusCode}");
+        throw new ApiException($"{stringResponse}: Status code {response.StatusCode}.");
       }
     }
 
     private async Task<T> Get<T>(string path) where T : class
     {
       var response = await httpClient.GetAsync(BuildUrl(path));
-      response.EnsureSuccessStatusCode();
       var stringResponse = await response.Content.ReadAsStringAsync();
-      return JsonSerializer.Deserialize<T>(stringResponse)!;
+
+      if (response.IsSuccessStatusCode)
+      {
+        return JsonSerializer.Deserialize<T>(stringResponse)!;
+      }
+      else
+      {
+        throw new ApiException($"{stringResponse}: Status code {response.StatusCode}.");
+      }
     }
 
     public Task<Project> CreateProject(string projectName, string githubRepo)

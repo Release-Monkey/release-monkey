@@ -50,7 +50,7 @@ The executable file can be found in folder `cli\bin\Release\net8.0\publish`
  - Role
     - 0 = Releaser
     - 1 = Tester
-    - 2 = Both
+    - 2 = Both (Rather then assigning the user the both role, add a new entry in the table)
  - State
     - 0 = Accepted
     - 1 = Rejected

@@ -20,7 +20,7 @@ namespace ReleaseMonkey.Server.Controller
 
   [ApiController]
   [Route("projects")]
-  public class ProjectsController(ProjectsService projects) : ControllerBase
+  public class ProjectsController(ProjectsService projects, GithubService githubService) : ControllerBase
   {
     private readonly ProjectsService projects = projects;
 
@@ -58,9 +58,15 @@ namespace ReleaseMonkey.Server.Controller
     [HttpPost]
     public async Task<IActionResult> Create(CreateProjectRequest body)
     {
-      var user = HttpContext.Features.Get<UserWithToken>()!;
-      var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, user.Token);
-      return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
+      if (userRepos.Contains(body.Repo))
+      {
+        var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, user.Token);
+        return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
+      }
+      else
+      {
+        return Forbid($"Please use the full name of a repo you have access to. According to Github, you don't have access to {body.Repo}. The full name of a repo is owner_name/repo_name.");
+      }
     }
   }
 }
