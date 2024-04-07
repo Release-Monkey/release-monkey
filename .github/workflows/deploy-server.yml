@@ -59,7 +59,7 @@ jobs:
   deploy:
     needs: build
     # if: github.event.pull_request.merged == true
-    runs-on: [self-hosted]
+    runs-on: [dev-runner]
     steps:
       - name: Pull Image from docker hub
         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/release-monkey:latest
