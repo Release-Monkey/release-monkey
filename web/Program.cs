@@ -1,14 +1,14 @@
-using ReleaseMonkeyWeb.Components;
 using Blazored.LocalStorage;
+using ReleaseMonkeyWeb.Components;
+using ReleaseMonkeyWeb.Services;
 
 namespace ReleaseMonkeyWeb
 {
     public class Program
     {
-        private static void Main (string[] args)
+        private static void Main(string[] args)
         {
-            DotNetEnv.Env.Load("./.env");
-
+            DotNetEnv.Env.Load();
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -16,12 +16,10 @@ namespace ReleaseMonkeyWeb
                 .AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            builder.Services.AddHttpClient<Repository.User>(client =>
-            {
-                client.BaseAddress = new Uri(builder.Configuration["GITHUB_API_URL"]);
-            });
-
             builder.Services.AddBlazoredLocalStorage();
+
+            builder.Services.AddSingleton<LocalPreferencesServices>();
+            builder.Services.AddSingleton<ApiService>();
 
             var app = builder.Build();
 
@@ -32,8 +30,6 @@ namespace ReleaseMonkeyWeb
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            app.UseHttpsRedirection();
 
             app.UseStaticFiles();
             app.UseAntiforgery();
