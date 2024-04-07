@@ -2,9 +2,11 @@
 
 namespace cli.models
 {
-    internal record User(int Id, string Email, string Name, string Token);
+  internal record User(int Id, string Email, string Name, string Token);
 
-    internal record Project(int Id, string Name, string Repo);
+  internal record Project(int Id, string Name, string Repo);
 
-    internal record Release(int Id, string ReleaseName, int ProjectId);
+  internal record Release(int Id, string ReleaseName, int ProjectId);
+
+  internal record UserProject(int Id, int UserId, int ProjectId, int Role);
 }
