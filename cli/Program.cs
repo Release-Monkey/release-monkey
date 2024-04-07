@@ -6,6 +6,18 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
+        try
+        {
+            await ParseArgs(args);
+        }
+        catch (ApiException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    private static async Task ParseArgs(string[] args)
+    {
         LocalPreferencesServices localPreferencesServices = new();
         ApiService apiService = new(localPreferencesServices);
         GithubService githubService = new("Iv1.2a4a99768f6b514e", 30001);
