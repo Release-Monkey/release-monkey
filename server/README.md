@@ -30,7 +30,7 @@ cd release-monkey
 3. Run the server using the .NET runtime
 
 ```sh
-dotnet run
+dotnet run --urls http://0.0.0.0:3000
 ```
 
 ### Swagger Docs
