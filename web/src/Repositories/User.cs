@@ -16,8 +16,8 @@ namespace ReleaseMonkeyWeb.Repository
 
         public async Task <string> FetchAccessToken (string accessCode)
         {
-            var clientId = "527ca76c9121b85da825";
-            var clientSecret = "4e46f318b446c424346d55b7e7570f9601e27c6b";
+            var clientId = Environment.GetEnvironmentVariable("GITHUB_CLIENT_ID");
+            var clientSecret = Environment.GetEnvironmentVariable("GITHUB_CLIENT_SECRET");
 
             var url = "https://github.com/login/oauth/access_token";
 
