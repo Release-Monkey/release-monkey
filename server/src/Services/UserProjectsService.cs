@@ -36,7 +36,15 @@ namespace ReleaseMonkey.Server.Services
     public Task<UserProject> InsertUserProjectByEmail(string email, int projectId, int role)
     {
 
-      User user = users.FindByEmail(email);
+      User user;
+      try
+      {
+        user = users.FindByEmail(email);
+      }
+      catch (System.Exception)
+      {
+        user = users.InsertOrUpdateUser("", email);
+      }
 
       using (SqlTransaction transaction = db.Connection.BeginTransaction())
       {
