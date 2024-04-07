@@ -39,7 +39,7 @@ jobs:
           echo "GITHUB_APP_CLIENT_SECRET=${{secrets.HUB_APP_CLIENT_SECRET }}" >> .env
           echo "SMTP_USERNAME=${{secrets.SMTP_USERNAME }}" >> .env
           echo "SMTP_PASSWORD=${{secrets.SMTP_PASSWORD }}" >> .env
-          sed -i 's|EXPOSE 8080|COPY env.properties .env \nEXPOSE 8080|' Dockerfile
+          sed -i 's|EXPOSE 8080|COPY .env .env \nEXPOSE 8080|' Dockerfile
 
     - name: Login to docker hub
       run: |
