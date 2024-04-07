@@ -1,7 +1,7 @@
 # Run
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /server
-COPY /server/bin/Release/net8.0 .
+COPY /Release .
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://*:8080
 ENTRYPOINT ["dotnet", "ReleaseMonkey.dll"]
