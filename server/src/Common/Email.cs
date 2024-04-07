@@ -5,7 +5,13 @@ namespace ReleaseMonkey.src.Common
 {
     public class Email
     {
-        public static List<String> body = ["A new release has been created for <project>, please begin testing", "The release <release> has been approved", "The release <release> has been rejected"];
+        public static int BeginRelease = 0;
+        
+        public static int AcceptedRelease = 1;
+
+        public static int RejectedRelease = 2;
+
+        private static List<String> body = ["A new release has been created for <project>, please begin testing", "The release <release> has been approved", "The release <release> has been rejected"];
         public static void sendEmail(List<string> toAddresses, string releaseName, string projectName, int type)
         {
             MailAddress from = new MailAddress("releasemonkey01@gmail.com");
