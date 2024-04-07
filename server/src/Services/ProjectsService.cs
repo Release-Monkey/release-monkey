@@ -7,35 +7,35 @@ using System.Data;
 
 namespace ReleaseMonkey.Server.Services
 {
-    public class ProjectsService(ProjectsRepository projects, UserProjectsRepository userProjects, Db db)
+  public class ProjectsService(ProjectsRepository projects, UserProjectsRepository userProjects, Db db)
+  {
+    public Task<Project> CreateProject(int userId, string projectName, string githubRepo, string token)
     {
-        public Task<Project> CreateProject(int userId, string projectName, string githubRepo, string token)
+      using (SqlTransaction transaction = db.Connection.BeginTransaction())
+      {
+        try
         {
-            using (SqlTransaction transaction = db.Connection.BeginTransaction())
-            {
-                try
-                {
-                    Project project = projects.InsertProject(transaction, db, projectName, githubRepo, token);
-                    userProjects.InsertUserProject(transaction, db, userId, project.Id, 1);
-                    transaction.Commit();
-                    return Task.FromResult(project);
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+          Project project = projects.InsertProject(transaction, db, projectName, githubRepo, token);
+          userProjects.InsertUserProject(transaction, db, userId, project.Id, 0);
+          transaction.Commit();
+          return Task.FromResult(project);
         }
-
-        public Task<Project> GetProjectById(int projectId)
+        catch (Exception)
         {
-            return Task.FromResult(projects.GetProjectById(db, projectId));
+          transaction.Rollback();
+          throw;
         }
-
-        public List<int> GetReleaseMakerUserIds(int projectId)
-        {
-            return userProjects.GetUserIdsWithRole(db, 1, projectId);
-        }
+      }
     }
+
+    public Task<Project> GetProjectById(int projectId)
+    {
+      return Task.FromResult(projects.GetProjectById(db, projectId));
+    }
+
+    public List<int> GetReleaseMakerUserIds(int projectId)
+    {
+      return userProjects.GetUserIdsWithRole(db, 1, projectId);
+    }
+  }
 }

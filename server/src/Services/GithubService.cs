@@ -54,5 +54,19 @@ namespace ReleaseMonkey.Server.Services
 
             return (loginResponse["login"].ToString()!, primaryEmail!.ToString()!);
         }
+
+        public async Task<IEnumerable<string>> ListRepos(string accessToken)
+        {
+            HttpRequestMessage requestMessage = new(HttpMethod.Get, "https://api.github.com/user/repos");
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue("release-monkey", "api"));
+            var response = await client.SendAsync(requestMessage);
+            response.EnsureSuccessStatusCode();
+
+            var stringResponse = await response.Content.ReadAsStringAsync();
+            var jsonResponse = JsonSerializer.Deserialize<Dictionary<string, object>[]>(stringResponse)!;
+
+            return jsonResponse.Select(item => item["full_name"].ToString()!);
+        }
     }
 }
