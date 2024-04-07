@@ -19,7 +19,7 @@ namespace cli.services
       }
     }
 
-    private static string BuildUrl(string path) => $"http://localhost:3000/{path}";
+    private static string BuildUrl(string path) => $"{Assembly.ApiUrl}/{path}";
 
     private async Task<R> Post<T, R>(string path, T body) where T : class where R : class
     {

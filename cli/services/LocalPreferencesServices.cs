@@ -30,6 +30,7 @@ namespace cli.services
             {
                 return JsonSerializer.Deserialize<User>(value.ToString()!);
             }
+            else
             {
                 return null;
             }
@@ -44,7 +45,7 @@ namespace cli.services
         public void SetProject(Project project)
         {
             cache["Project"] = JsonSerializer.Serialize(project);
-            SaveCache();            
+            SaveCache();
         }
 
         public Project? GetProject()
@@ -53,6 +54,7 @@ namespace cli.services
             {
                 return JsonSerializer.Deserialize<Project>(value.ToString()!);
             }
+            else
             {
                 return null;
             }
@@ -62,7 +64,7 @@ namespace cli.services
         {
             cache.Remove("Project");
             SaveCache();
-        }        
+        }
 
         private void SaveCache()
         {
@@ -94,7 +96,7 @@ namespace cli.services
 
         private static string PreferencesFilePath
         {
-            get => Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)!, "settings.json");
+            get => Path.Combine(Path.GetDirectoryName(Assembly.ExecutablePath)!, "settings.json");
         }
     }
 }

@@ -18,7 +18,7 @@ jobs:
 
       - name: Build CLI
         working-directory: ./cli
-        run: dotnet publish -c Release
+        run: dotnet publish -r win-x64 -c Release --self-contained true
 
       - name: Upload Release
         uses: marvinpinto/action-automatic-releases@latest
@@ -28,4 +28,4 @@ jobs:
           title: Release ${{ github.ref_name }}
           prerelease: false
           files: |
-            cli/bin/Release/net8.0/publish/*.exe
+            cli/bin/Release/net8.0/win-x64/publish/*.exe
