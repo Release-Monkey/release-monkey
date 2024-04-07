@@ -41,7 +41,7 @@ namespace ReleaseMonkey.Server.Services
       {
         user = users.FindByEmail(email);
       }
-      catch (System.Exception)
+      catch (KeyNotFoundException)
       {
         user = users.InsertOrUpdateUser("", email);
       }
