@@ -33,13 +33,13 @@ namespace ReleaseMonkey.Server.Services
                 Release release = releases.GetReleaseById(db, releaseTester.ReleaseId);
                 Project project = projects.GetProjectById(db, release.ProjectId);
                 var userIds = from userProject in userProjects.GetUsersForProject(db, project.Id) select userProject.UserId;
-                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, 2);
+                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, Email.RejectedRelease);
             } else if (GetReleaseState(releaseTester.ReleaseId) == 0)
             {
                 Release release = releases.GetReleaseById(db, releaseTester.ReleaseId);
                 Project project = projects.GetProjectById(db, release.ProjectId);
                 var userIds = from userProject in userProjects.GetUsersForProject(db, project.Id) select userProject.UserId;
-                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, 1);
+                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, Email.AcceptedRelease);
             }
             return Task.FromResult(releaseTester);
         }
