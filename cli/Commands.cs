@@ -1,10 +1,12 @@
 ﻿using cli.services;
 using ReleaseMonkey.Server.Services;
+using cli.models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace cli
 {
@@ -120,11 +122,55 @@ namespace cli
             }
         }
 
+        public Task PrintReleaseKey()
+        {
+            var user = preferencesServices.GetUser();
+            if (user == null)
+            {
+                Console.WriteLine("Not signed in. Please sign in to create release keys.");
+            }
+            else
+            {
+                var project = preferencesServices.GetProject();
+                if (project == null)
+                {
+                    Console.WriteLine("No project set. Either create a new project or set project with 'set-project PROJECT_ID'.");
+                }
+                else
+                {
+                    ReleaseKey releaseKey = new(user, project);
+                    var jsonString = JsonSerializer.Serialize(releaseKey);
+                    var jsonStringBytes = Encoding.UTF8.GetBytes(jsonString);
+                    Console.WriteLine(Convert.ToBase64String(jsonStringBytes));
+                }
+            }
+
+            return Task.FromResult<object?>(null);
+        }
+
+        public Task LoadReleaseKey(string releaseKeyString)
+        {
+            var releaseKeyStringBytes = Convert.FromBase64String(releaseKeyString);
+            var releaseKeyJson = Encoding.UTF8.GetString(releaseKeyStringBytes);
+            var releaseKey = JsonSerializer.Deserialize<ReleaseKey>(releaseKeyJson);
+            if (releaseKey == null)
+            {
+                Console.WriteLine("Invalid release key provided. Could not decode.");
+            }
+            else
+            {
+                preferencesServices.SetProject(releaseKey.Project);
+                preferencesServices.SetUser(releaseKey.User);
+            }
+
+            return Task.FromResult<object?>(null);
+        }
+
         public Task ApproveRelease(string releaseId) { throw new NotImplementedException(); }
 
         public void PrintHelp()
         {
-            Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything.");
+            Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything. More information available in README at https://github.com/Release-Monkey/release-monkey.");
         }
     }
 }
