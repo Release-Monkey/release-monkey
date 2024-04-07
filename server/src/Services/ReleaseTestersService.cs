@@ -65,8 +65,6 @@ namespace ReleaseMonkey.Server.Services
             {
                 return 0;
             }
-            
-
         }
     }
 }
