@@ -95,6 +95,11 @@ namespace cli.services
     {
       return Get<List<Release>>($"releases/project/{projectId}");
     }
+
+    public Task<List<string>> FetchRepos()
+    {
+      return Get<List<string>>("users/me/repos");
+    }
   }
 
   public sealed class ApiException(string message) : Exception(message)
