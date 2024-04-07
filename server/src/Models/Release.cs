@@ -4,6 +4,7 @@ namespace ReleaseMonkey.Server.Models
   (
     int Id,
     string ReleaseName,
-    int ProjectId
+    int ProjectId,
+    string DownloadLink
   );
 }
