@@ -1,5 +1,11 @@
 # Release Monkey
 
+Release automation made easier.
+
+## Are you a Grad?
+
+See [Release Monkey for your project](documentation/Developer.md) for instructions on how to use Release Monkey for your project. Alternatively, reach out to one of our team members for assistance with setting up your project with `rel-monkey`, our capable cli.
+
 ## Terraform setup
 - Download and install terraform (https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)\
 - Set AWS environment variables
