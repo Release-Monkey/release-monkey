@@ -43,7 +43,7 @@ namespace ReleaseMonkey.Server.Services
                     var emails = from u in userProjectList
                                  select u.UserId;
 
-                    Email.sendEmail(users.GetUserEmailsByIds(transaction, db, emails.ToList()), releaseName, project.Name, 0);
+                    Email.sendEmail(users.GetUserEmailsByIds(transaction, db, emails.ToList()), releaseName, project.Name, Email.BeginRelease);
 
                     transaction.Commit();
                     return Task.FromResult(release);

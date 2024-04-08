@@ -1,0 +1,2 @@
+ALTER TABLE [Project]
+DROP CONSTRAINT UK_Project_Repo

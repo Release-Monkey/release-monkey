@@ -2,7 +2,7 @@ namespace ReleaseMonkey.Server.Models
 {
   public record ReleaseTester
   (
-    int ReleaseTesterId,
+    int Id,
     int ReleaseId,
     int TesterId,
     int State,

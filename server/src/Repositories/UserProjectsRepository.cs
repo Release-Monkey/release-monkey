@@ -41,6 +41,40 @@ namespace ReleaseMonkey.Server.Repositories
             return userProjects;
         }
 
+        public List<UserProject> GetUsersForProject(Db db, int projectId)
+        {
+            List<UserProject> userProjects = new List<UserProject>();
+            string sql = @"SELECT UserProjectID, UserID, ProjectID, Role FROM [UserProject] WHERE ProjectID=@ProjectID";
+            using SqlCommand command = new(sql, db.Connection);
+            command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
+
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            while (reader.Read())
+            {
+                userProjects.Add(new UserProject(reader.GetInt32("UserProjectID"), reader.GetInt32("UserID"), reader.GetInt32("ProjectID"), reader.GetInt32("Role")));
+            }
+            return userProjects;
+        }
+
+        public UserProject GetUserProjectById(Db db, int userProjectId)
+        {
+            string sql = @"SELECT UserProjectID, UserID, ProjectID, Role FROM [UserProject] WHERE UserProjectID=@UserProjectID";
+            using SqlCommand command = new(sql, db.Connection);
+            command.Parameters.Add("@UserProjectID", SqlDbType.Int).Value = userProjectId;
+
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            if (reader.Read())
+            {
+                return new UserProject(reader.GetInt32("UserProjectID"), reader.GetInt32("UserID"), reader.GetInt32("ProjectID"), reader.GetInt32("Role"));
+            }
+            else
+            {
+                throw new KeyNotFoundException($"There is no such user project with id {userProjectId}.");
+            }
+        }
+
         public UserProject InsertUserProject(SqlTransaction transaction, Db db, int userId, int projectID, int role)
         {
             string sql = @" INSERT INTO[UserProject](UserId, ProjectID, Role)
