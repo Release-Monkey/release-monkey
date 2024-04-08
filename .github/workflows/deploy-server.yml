@@ -27,19 +27,18 @@ jobs:
           cd server
           dotnet publish -c Release -o Release
 
-    - name: Update Dockerfile with .env
+    - name: Update Release with .env
       run: |
           cd server
-          echo "DB_HOST_DEV=${{secrets.DB_HOST_DEV}}" > .env
-          echo "DB_USER=${{secrets.DB_DEV_USERNAME}}" >> .env
-          echo "DB_PASS=${{secrets.DB_DEV_PASSWORD }}" >> .env
-          echo "DB_NAME=release_monkey_db" >> .env
-          echo "DB_TRUST_CERT=true" >> .env
-          echo "GITHUB_APP_CLIENT_ID=${{secrets.HUB_APP_CLIENT_ID }}" >> .env
-          echo "GITHUB_APP_CLIENT_SECRET=${{secrets.HUB_APP_CLIENT_SECRET }}" >> .env
-          echo "SMTP_USERNAME=${{secrets.SMTP_USERNAME }}" >> .env
-          echo "SMTP_PASSWORD=${{secrets.SMTP_PASSWORD }}" >> .env
-          sed -i 's|EXPOSE 3000|COPY .env .env \nEXPOSE 3000|' Dockerfile
+          echo "DB_HOST_DEV=${{secrets.DB_HOST_DEV}}" > Release/.env
+          echo "DB_USER=${{secrets.DB_DEV_USERNAME}}" >> Release/.env
+          echo "DB_PASS=${{secrets.DB_DEV_PASSWORD }}" >> Release/.env
+          echo "DB_NAME=release_monkey_db" >> Release/.env
+          echo "DB_TRUST_CERT=true" >> Release/.env
+          echo "GITHUB_APP_CLIENT_ID=${{secrets.HUB_APP_CLIENT_ID }}" >> Release/.env
+          echo "GITHUB_APP_CLIENT_SECRET=${{secrets.HUB_APP_CLIENT_SECRET }}" >> Release/.env
+          echo "SMTP_USERNAME=${{secrets.SMTP_USERNAME }}" >> Release/.env
+          echo "SMTP_PASSWORD=${{secrets.SMTP_PASSWORD }}" >> Release/.env
 
     - name: Login to docker hub
       run: |
