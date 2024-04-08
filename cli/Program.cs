@@ -20,7 +20,7 @@ internal class Program
     {
         LocalPreferencesServices localPreferencesServices = new();
         ApiService apiService = new(localPreferencesServices);
-        GithubService githubService = new("Iv1.2a4a99768f6b514e", 30001);
+        GithubService githubService = new("Iv1.2a4a99768f6b514e", 3001);
         Commands commands = new(localPreferencesServices, apiService, githubService);
 
         if (args.Length > 0)
@@ -111,6 +111,9 @@ internal class Program
                     break;
                 case "repos":
                     await commands.ListRepos();
+                    break;
+                case "version":
+                    commands.PrintVersion();
                     break;
                 case "help":
                     commands.PrintHelp();

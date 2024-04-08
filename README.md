@@ -36,10 +36,10 @@ Where `COMMAND` is the command to be executed. See `Program.cs` for the availabl
 You must be in the /cli folder to build the CLI.
 
 ```bash
-$ dotnet publish -c Release
+$ dotnet publish -r win-x64 -c Release --self-contained true
 ```
 
-The executable file can be found in folder `cli\bin\Release\net8.0\publish`
+The executable file can be found in folder `cli\bin\Release\net8.0\win-x64\publish`
 
 ## Access the database using MS SQL Server studio
 - Open ms sql sever studio

@@ -105,7 +105,7 @@ namespace cli
         {
           try
           {
-            var userProject = await apiService.AddTester(email, project.Id);
+            await apiService.AddTester(email, project.Id);
             Console.WriteLine($"Tester {email} has been added to {project.Name}.");
           }
           catch (ApiException e)
@@ -116,6 +116,7 @@ namespace cli
         }
       }
     }
+    
     public async Task CreateRelease(string releaseName)
     {
       var currentProject = preferencesServices.GetProject();
@@ -197,9 +198,14 @@ namespace cli
       repos.ForEach(Console.WriteLine);
     }
 
+    public void PrintVersion()
+    {
+      Console.WriteLine($"Release Monkey {Assembly.Version}\n{Assembly.GetBuild()} build");
+    }
+
     public void PrintHelp()
     {
-      Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything.");
-    }
+      Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything. More information available in README at https://github.com/Release-Monkey/release-monkey.");
+    }    
   }
 }
