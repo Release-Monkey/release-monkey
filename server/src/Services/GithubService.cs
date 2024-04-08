@@ -3,9 +3,21 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ReleaseMonkey.Server.Services
 {
+    public record CreateTagRequest
+    (
+        string Tag,
+        string Message,
+        string GitObject,
+        string Type,
+        Tagger Tagger
+    );
+
+    public record Tagger(string name, string email, string date);
     public class GithubService(string clientId, string clientSecret)
     {
         private readonly HttpClient client = new();
@@ -67,6 +79,30 @@ namespace ReleaseMonkey.Server.Services
             var jsonResponse = JsonSerializer.Deserialize<Dictionary<string, object>[]>(stringResponse)!;
 
             return jsonResponse.Select(item => item["full_name"].ToString()!);
+        }
+
+        public async Task<String> ReleaseProject(string repo, string accessToken, string releaseName)
+        {
+            HttpRequestMessage request1Message = new(HttpMethod.Get, "https://api.github.com/repos/"+repo+"/branches/master");
+            request1Message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            request1Message.Headers.UserAgent.Add(new ProductInfoHeaderValue("release-monkey", "api"));
+            var response1 = await client.SendAsync(request1Message);
+            response1.EnsureSuccessStatusCode();
+
+            var stringResponse = await response1.Content.ReadAsStringAsync();
+            var jsonResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(stringResponse)!;
+            var commit = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonResponse["commit"].ToString())!;
+
+            HttpRequestMessage requestMessage = new(HttpMethod.Post, "https://api.github.com/repos/"+repo+"/git/tags");
+            var tagger = GetUserInfo(accessToken);
+            var requestBody = new CreateTagRequest(releaseName.Replace(" ","_"), releaseName, commit["sha"].ToString(), "commit", new Tagger(tagger.Result.Name, tagger.Result.Email, DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzz")));
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue("release-monkey", "api"));
+            StringContent content = new(JsonSerializer.Serialize(requestBody).Replace("GitObject","object"), Encoding.UTF8, "application/json");
+            requestMessage.Content = content;
+            var response = await client.SendAsync(requestMessage);
+            response.EnsureSuccessStatusCode();
+            return response.StatusCode.ToString();
         }
     }
 }
