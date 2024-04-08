@@ -117,7 +117,7 @@ namespace cli
       }
     }
     
-    public async Task CreateRelease(string releaseName)
+    public async Task CreateRelease(string releaseName, string downloadLink)
     {
       var currentProject = preferencesServices.GetProject();
       if (currentProject == null)
@@ -126,7 +126,7 @@ namespace cli
       }
       else
       {
-        var release = await apiService.CreateRelease(releaseName, currentProject.Id);
+        var release = await apiService.CreateRelease(releaseName, currentProject.Id, downloadLink);
         Console.WriteLine($"New release, {release.ReleaseName}, has been created for {currentProject.Name}. Your testers will be notified via email to begin testing.");
       }
     }

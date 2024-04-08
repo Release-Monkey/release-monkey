@@ -74,13 +74,13 @@ internal class Program
                     }
                     break;
                 case "create-release":
-                    if (args.Length > 1)
+                    if (args.Length > 2)
                     {
-                        await commands.CreateRelease(args[1]);
+                        await commands.CreateRelease(args[1], args[2]);
                     }
                     else
                     {
-                        Console.WriteLine("Please provide a name for the project");
+                        Console.WriteLine("Please provide a name and a download link for the release.");
                     }
                     break;
                 case "list-releases":

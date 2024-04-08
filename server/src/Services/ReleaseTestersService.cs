@@ -34,14 +34,13 @@ namespace ReleaseMonkey.Server.Services
                 Release release = releases.GetReleaseById(db, releaseTester.ReleaseId);
                 Project project = projects.GetProjectById(db, release.ProjectId);
                 var userIds = from userProject in userProjects.GetUsersForProject(db, project.Id) select userProject.UserId;
-                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, Email.RejectedRelease);
+                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, "", Email.RejectedRelease);
             } else if (releaseState == 0)
             {
                 Release release = releases.GetReleaseById(db, releaseTester.ReleaseId);
                 Project project = projects.GetProjectById(db, release.ProjectId);
                 var userIds = from userProject in userProjects.GetUsersForProject(db, project.Id) select userProject.UserId;
-                string response = await github.ReleaseProject(project.Repo, project.Token, release.ReleaseName);
-                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, Email.AcceptedRelease);
+                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, "", Email.AcceptedRelease);
             }
             return releaseTester;
         }

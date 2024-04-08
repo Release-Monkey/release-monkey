@@ -83,11 +83,12 @@ namespace cli.services
       return Get<Project>($"projects/{projectId}");
     }
 
-    public Task<Release> CreateRelease(string releaseName, int projectId)
+    public Task<Release> CreateRelease(string releaseName, int projectId, string downloadLink)
     {
       return Post<Dictionary<string, object>, Release>("releases", new Dictionary<string, object>{
                 {"Name", releaseName},
-                {"ProjectId", projectId}
+                {"ProjectId", projectId},
+                {"DownloadLink", downloadLink}
             });
     }
 
