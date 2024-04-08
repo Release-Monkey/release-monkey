@@ -27,6 +27,7 @@
     {
         if (firstRender)
         {
+            await apiService.SetStorage(localStorage);
             var currentUser = await preferencesServices.GetUser(localStorage);
             if (currentUser == null)
             {

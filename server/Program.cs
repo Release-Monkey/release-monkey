@@ -3,11 +3,23 @@ using ReleaseMonkey.Server.Services;
 using ReleaseMonkey.src.Repositories;
 using ReleaseMonkey.Server.Models;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ReleaseMonkey.Server
 {
   public class Program
   {
+
+    private static readonly List<(string Method, string Pattern)> PublicRoutes = [
+      ("POST", "/users"),
+      ("GET", "/public"),
+    ];
+
+    private static bool IsPublicRoute(string method, string path)
+    {
+      return !PublicRoutes.Where(route => route.Method == method && path.Contains(route.Pattern)).IsNullOrEmpty();
+    }
+
     private static void Main(string[] args)
     {
       DotNetEnv.Env.Load();
@@ -55,9 +67,9 @@ namespace ReleaseMonkey.Server
 
         app.Use(async (context, next) =>
         {
-          if (context.Request.Method == "POST" && context.Request.Path.ToString().Contains("/users"))
+          if (IsPublicRoute(context.Request.Method, context.Request.Path.ToString()))
           {
-            // Login Request, do not authenticate.
+            // Public route. Do not authenticate.
             await next.Invoke();
           }
           else
