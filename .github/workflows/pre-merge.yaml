@@ -1,0 +1,29 @@
+name: Pre merge test builds
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Test CLI Packaging
+        working-directory: ./cli
+        run: dotnet build
+
+      - name: Test Server Packaging
+        working-directory: ./server
+        run: dotnet build
+
+      - name: Test Web Packaging
+        working-directory: ./web
+        run: dotnet build ReleaseMonkeyWeb.sln

@@ -43,7 +43,7 @@ jobs:
     - name: Build docker image
       run: |
           cd web
-          sudo docker build -f Dockerfileweb -t ${{ secrets.DOCKER_USERNAME }}/release-monkey-web .
+          sudo docker build -f Dockerfilewebdev -t ${{ secrets.DOCKER_USERNAME }}/release-monkey-web .
 
     - name: Publish image to Docker-hub
       run: |
