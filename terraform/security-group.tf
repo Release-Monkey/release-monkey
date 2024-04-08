@@ -77,10 +77,18 @@ resource "aws_security_group" "ec2_security_group" {
   }
 
   ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    
   }
 
   # Define inbound rules to allow traffic from anywhere to the EC2 instance on port 22 (for SSH)
