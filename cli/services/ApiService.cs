@@ -19,7 +19,7 @@ namespace cli.services
       }
     }
 
-    private static string BuildUrl(string path) => $"http://localhost:3000/{path}";
+    private static string BuildUrl(string path) => $"{Assembly.ApiUrl}/{path}";
 
     private async Task<R> Post<T, R>(string path, T body) where T : class where R : class
     {
@@ -83,17 +83,23 @@ namespace cli.services
       return Get<Project>($"projects/{projectId}");
     }
 
-    public Task<Release> CreateRelease(string releaseName, int projectId)
+    public Task<Release> CreateRelease(string releaseName, int projectId, string downloadLink)
     {
       return Post<Dictionary<string, object>, Release>("releases", new Dictionary<string, object>{
                 {"Name", releaseName},
-                {"ProjectId", projectId}
+                {"ProjectId", projectId},
+                {"DownloadLink", downloadLink}
             });
     }
 
     public Task<List<Release>> FetchReleases(int projectId)
     {
       return Get<List<Release>>($"releases/project/{projectId}");
+    }
+
+    public Task<List<string>> FetchRepos()
+    {
+      return Get<List<string>>("users/me/repos");
     }
   }
 

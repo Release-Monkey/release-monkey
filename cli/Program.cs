@@ -20,7 +20,7 @@ internal class Program
     {
         LocalPreferencesServices localPreferencesServices = new();
         ApiService apiService = new(localPreferencesServices);
-        GithubService githubService = new("Iv1.2a4a99768f6b514e", 30001);
+        GithubService githubService = new("Iv1.2a4a99768f6b514e", 3001);
         Commands commands = new(localPreferencesServices, apiService, githubService);
 
         if (args.Length > 0)
@@ -74,13 +74,13 @@ internal class Program
                     }
                     break;
                 case "create-release":
-                    if (args.Length > 1)
+                    if (args.Length > 2)
                     {
-                        await commands.CreateRelease(args[1]);
+                        await commands.CreateRelease(args[1], args[2]);
                     }
                     else
                     {
-                        Console.WriteLine("Please provide a name for the project");
+                        Console.WriteLine("Please provide a name and a download link for the release.");
                     }
                     break;
                 case "list-releases":
@@ -108,6 +108,12 @@ internal class Program
                     {
                         Console.WriteLine("Please provide a release key to load.");
                     }
+                    break;
+                case "repos":
+                    await commands.ListRepos();
+                    break;
+                case "version":
+                    commands.PrintVersion();
                     break;
                 case "help":
                     commands.PrintHelp();

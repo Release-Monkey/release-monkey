@@ -105,7 +105,7 @@ namespace cli
         {
           try
           {
-            var userProject = await apiService.AddTester(email, project.Id);
+            await apiService.AddTester(email, project.Id);
             Console.WriteLine($"Tester {email} has been added to {project.Name}.");
           }
           catch (ApiException e)
@@ -116,7 +116,8 @@ namespace cli
         }
       }
     }
-    public async Task CreateRelease(string releaseName)
+    
+    public async Task CreateRelease(string releaseName, string downloadLink)
     {
       var currentProject = preferencesServices.GetProject();
       if (currentProject == null)
@@ -125,7 +126,7 @@ namespace cli
       }
       else
       {
-        var release = await apiService.CreateRelease(releaseName, currentProject.Id);
+        var release = await apiService.CreateRelease(releaseName, currentProject.Id, downloadLink);
         Console.WriteLine($"New release, {release.ReleaseName}, has been created for {currentProject.Name}. Your testers will be notified via email to begin testing.");
       }
     }
@@ -191,9 +192,20 @@ namespace cli
 
     public Task ApproveRelease(string releaseId) { throw new NotImplementedException(); }
 
+    public async Task ListRepos()
+    {
+      var repos = await apiService.FetchRepos();
+      repos.ForEach(Console.WriteLine);
+    }
+
+    public void PrintVersion()
+    {
+      Console.WriteLine($"Release Monkey {Assembly.Version}\n{Assembly.GetBuild()} build");
+    }
+
     public void PrintHelp()
     {
-      Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything.");
-    }
+      Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything. More information available in README at https://github.com/Release-Monkey/release-monkey.");
+    }    
   }
 }
