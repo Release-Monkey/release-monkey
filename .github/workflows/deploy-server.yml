@@ -30,7 +30,7 @@ jobs:
     - name: Update Dockerfile with .env
       run: |
           cd server
-          echo "DB_HOST_DEV=${{secrets.DB_HOST_DEV}}" >> .env
+          echo "DB_HOST_DEV=${{secrets.DB_HOST_DEV}}" > .env
           echo "DB_USER=${{secrets.DB_DEV_USERNAME}}" >> .env
           echo "DB_PASS=${{secrets.DB_DEV_PASSWORD }}" >> .env
           echo "DB_NAME=release_monkey_db" >> .env
@@ -39,22 +39,22 @@ jobs:
           echo "GITHUB_APP_CLIENT_SECRET=${{secrets.HUB_APP_CLIENT_SECRET }}" >> .env
           echo "SMTP_USERNAME=${{secrets.SMTP_USERNAME }}" >> .env
           echo "SMTP_PASSWORD=${{secrets.SMTP_PASSWORD }}" >> .env
-          sed -i 's|EXPOSE 8080|COPY .env .env \nEXPOSE 8080|' Dockerfile
+          sed -i 's|EXPOSE 3000|COPY .env .env \nEXPOSE 3000|' Dockerfile
 
     - name: Login to docker hub
       run: |
           cd server
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Build docker image
       run: |
           cd server
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/release-monkey .
+          sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/release-monkey .
 
     - name: Publish image to Docker-hub
       run: |
           cd server
-          docker push ${{ secrets.DOCKER_USERNAME }}/release-monkey:latest
+          sudo docker push ${{ secrets.DOCKER_USERNAME }}/release-monkey:latest
 
   deploy:
     needs: build
@@ -66,4 +66,4 @@ jobs:
       - name: Delete old container
         run: sudo docker rm -f release-monkey-container
       - name: Run docker container
-        run: sudo docker run -d -p 8080:8080 --name release-monkey-container ${{ secrets.DOCKER_USERNAME }}/release-monkey
+        run: sudo docker run -d -p 3000:3000 --name release-monkey-container ${{ secrets.DOCKER_USERNAME }}/release-monkey
