@@ -28,7 +28,7 @@ jobs:
           
     - name: List contents
       run: |
-          ls -l server/Release
+          ls
 
     - name: Update Release with .env
       run: |
