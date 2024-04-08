@@ -57,6 +57,22 @@ namespace ReleaseMonkey.Server.Repositories
             return userProjects;
         }
 
+        public List<UserProject> GetReleasersForProject(Db db, int projectId)
+        {
+            List<UserProject> userProjects = new List<UserProject>();
+            string sql = @"SELECT UserProjectID, UserID, ProjectID, Role FROM [UserProject] WHERE ProjectID=@ProjectID AND Role=0";
+            using SqlCommand command = new(sql, db.Connection);
+            command.Parameters.Add("@ProjectID", SqlDbType.Int).Value = projectId;
+
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            while (reader.Read())
+            {
+                userProjects.Add(new UserProject(reader.GetInt32("UserProjectID"), reader.GetInt32("UserID"), reader.GetInt32("ProjectID"), reader.GetInt32("Role")));
+            }
+            return userProjects;
+        }        
+
         public UserProject GetUserProjectById(Db db, int userProjectId)
         {
             string sql = @"SELECT UserProjectID, UserID, ProjectID, Role FROM [UserProject] WHERE UserProjectID=@UserProjectID";
