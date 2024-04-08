@@ -45,16 +45,6 @@ jobs:
           cd server
           cd Release
           ls -a
-          
-    - name: List contents of .env
-      run: |
-        cd server
-        cd Release
-        cat .env
-
-    - name: edit docker file
-      run: |
-          cd server
 
     - name: Login to docker hub
       run: |

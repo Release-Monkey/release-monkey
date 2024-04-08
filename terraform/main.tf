@@ -117,31 +117,11 @@ resource "aws_instance" "release_monkey_instance" {
   # Associate the instance with an existing key pair for SSH access
   key_name = "release_monkey_ec2_key_pair"
 
-  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstanceDev" })
+  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstance" })
 }
 
 resource "aws_eip" "lb" {
   instance = aws_instance.release_monkey_instance.id
-  domain   = "vpc"
-  tags     = var.mandatory_tags
-}
-
-resource "aws_instance" "release_monkey_instance-grads" {
-  ami           = "ami-0ef9e689241f0bb6e"
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.subnet_b.id
-
-  # Associate the instance with the EC2 security group
-  vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
-
-  # Associate the instance with an existing key pair for SSH access
-  key_name = "release_monkey_ec2_key_pair"
-
-  tags = merge(var.mandatory_tags, { Name = "ReleaseMonkeyInstanceGrad" })
-}
-
-resource "aws_eip" "lb-grad" {
-  instance = aws_instance.release_monkey_instance-grads.id
   domain   = "vpc"
   tags     = var.mandatory_tags
 }
