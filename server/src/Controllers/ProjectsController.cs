@@ -55,6 +55,20 @@ namespace ReleaseMonkey.Server.Controller
       }
     }
 
+    [HttpGet("{id:int}/public", Name = "FetchPublicProjectById")]
+    public async Task<IActionResult> FetchPublic(int id)
+    {
+      try
+      {
+        var project = await projects.GetProjectById(id);
+        return Ok(new PublicProject(project.Id, project.Name));
+      }
+      catch (KeyNotFoundException e)
+      {
+        return NotFound(e.Message);
+      }
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(CreateProjectRequest body)
     {

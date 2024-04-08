@@ -7,20 +7,20 @@ using ReleaseMonkeyWeb.Models;
 
 namespace ReleaseMonkeyWeb.Services
 {
-    public class ApiService
+    public class ApiService(LocalPreferencesServices preferencesServices)
     {
-        private readonly HttpClient http = new();
+        static readonly int BetaTesterId = 2;
 
-        public ApiService(LocalPreferencesServices preferencesServices, ILocalStorageService localStorage)
+        private readonly HttpClient http = new();
+        private User? CurrentUser;
+
+        public async Task SetStorage(ILocalStorageService localStorage)
         {
-            preferencesServices.GetUser(localStorage).ContinueWith(async (getUserTask) =>
+            CurrentUser = await preferencesServices.GetUser(localStorage);
+            if (CurrentUser != null)
             {
-                User? user = await getUserTask;
-                if (user != null)
-                {
-                    http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
-                }
-            });
+                http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CurrentUser.Token);
+            }
         }
 
         private static string BuildUrl(string path) => $"http://localhost:3000/{path}";
@@ -62,6 +62,20 @@ namespace ReleaseMonkeyWeb.Services
         {
             return Post<Dictionary<string, string>, User>("users", new Dictionary<string, string>{
                 {"AccessCode", accessCode}
+            });
+        }
+
+        public Task<PublicProject> GetPublicProject(string projectId)
+        {
+            return Get<PublicProject>($"projects/{projectId}/public");
+        }
+
+        public Task<UserProject> AddBetaTester(int projectId)
+        {
+            return Post<Dictionary<string, object>, UserProject>("user-projects/beta", new Dictionary<string, object>{
+                {"UserId", CurrentUser!.Id},
+                {"ProjectId", projectId},
+                {"Role", BetaTesterId}
             });
         }
     }
