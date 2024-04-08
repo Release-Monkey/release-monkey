@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*-beta'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Build CLI
+        working-directory: ./cli
+        run: dotnet publish -r win-x64 -c Release --self-contained true
+
+      - name: Mark beta
+        working-directory: ./cli/bin/Release/net8.0/win-x64/publish
+        run: ren cli.exe rel-monkey-beta.exe
+
+      - name: Upload Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ github.ref_name }}
+          title: Release ${{ github.ref_name }}
+          prerelease: true
+          files: |
+            cli/bin/Release/net8.0/win-x64/publish/*.exe

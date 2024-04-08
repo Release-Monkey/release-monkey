@@ -16,6 +16,14 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Test Packaging
+      - name: Test CLI Packaging
         working-directory: ./cli
         run: dotnet build
+
+      - name: Test Server Packaging
+        working-directory: ./server
+        run: dotnet build
+
+      - name: Test Web Packaging
+        working-directory: ./web
+        run: dotnet build web.sln

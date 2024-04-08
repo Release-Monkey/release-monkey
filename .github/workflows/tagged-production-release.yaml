@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      - 'v*-prod'
 
 jobs:
   build:
@@ -19,6 +19,10 @@ jobs:
       - name: Build CLI
         working-directory: ./cli
         run: dotnet publish -r win-x64 -c Release --self-contained true
+
+      - name: Mark production
+        working-directory: ./cli/bin/Release/net8.0/win-x64/publish
+        run: ren cli.exe rel-monkey.exe
 
       - name: Upload Release
         uses: marvinpinto/action-automatic-releases@latest

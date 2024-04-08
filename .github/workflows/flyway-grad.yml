@@ -1,21 +1,15 @@
 name: Flyway Migrations Grad
 
 on:
+  push:
+    tags:
+      - 'v*-prod'
 
-  pull_request:
-    types:
-      - closed
-    branches:
-      - main
-    paths:
-      - 'sql/grad/*'
-  
 env:
   FLYWAY_VERSION: 9.16.3
 
 jobs:
   build-grad:
-    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
