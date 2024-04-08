@@ -30,7 +30,7 @@ jobs:
     - name: Update Release with .env
       run: |
           cd server
-          echo "DB_HOST_DEV=${{secrets.DB_HOST_DEV}}" > Release/.env
+          echo "DB_HOST=${{secrets.DB_HOST_DEV}}" > Release/.env
           echo "DB_USER=${{secrets.DB_DEV_USERNAME}}" >> Release/.env
           echo "DB_PASS=${{secrets.DB_DEV_PASSWORD }}" >> Release/.env
           echo "DB_NAME=release_monkey_db" >> Release/.env
@@ -44,12 +44,7 @@ jobs:
       run: |
           cd server
           cd Release
-          ls 
-    - name: List contents of .env
-      run: |
-        cd server
-        cd Release
-        cat .env
+          ls
 
     - name: Login to docker hub
       run: |
