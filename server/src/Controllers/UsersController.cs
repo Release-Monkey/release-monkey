@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ReleaseMonkey.Server.Models;
 using ReleaseMonkey.Server.Services;
 
 namespace ReleaseMonkey.Server.Controllers
@@ -7,7 +8,7 @@ namespace ReleaseMonkey.Server.Controllers
 
     [ApiController]
     [Route("users")]
-    public class UsersController(UsersService usersService) : ControllerBase
+    public class UsersController(UsersService usersService, GithubService githubService) : ControllerBase
     {
         [HttpGet("{id:int}", Name = "FetchUserById")]
         public IActionResult Fetch(int id)
@@ -28,5 +29,14 @@ namespace ReleaseMonkey.Server.Controllers
             var user = await usersService.SignInWithGithubAccessCode(request.AccessCode);
             return CreatedAtRoute("FetchUserById", new { user.Id }, user);
         }
+
+        [HttpGet("me/repos", Name = "FetchUserRepos")]
+        public async Task<IActionResult> GetRepos()
+        {
+            var user = HttpContext.Features.Get<UserWithToken>()!;
+            return Ok(await githubService.ListRepos(user.Token));
+        }
     }
+
+
 }

@@ -109,6 +109,9 @@ internal class Program
                         Console.WriteLine("Please provide a release key to load.");
                     }
                     break;
+                case "repos":
+                    await commands.ListRepos();
+                    break;
                 case "help":
                     commands.PrintHelp();
                     break;

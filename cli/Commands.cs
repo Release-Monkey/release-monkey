@@ -191,6 +191,12 @@ namespace cli
 
     public Task ApproveRelease(string releaseId) { throw new NotImplementedException(); }
 
+    public async Task ListRepos()
+    {
+      var repos = await apiService.FetchRepos();
+      repos.ForEach(Console.WriteLine);
+    }
+
     public void PrintHelp()
     {
       Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything.");
