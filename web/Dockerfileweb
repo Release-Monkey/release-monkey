@@ -4,4 +4,4 @@ WORKDIR /web
 COPY /Release .
 EXPOSE 80
 ENV ASPNETCORE_URLS=http://*:80
-ENTRYPOINT ["dotnet", "ReleaseMonkey.dll"]
+ENTRYPOINT ["dotnet", "ReleaseMonkeyWeb.dll"]

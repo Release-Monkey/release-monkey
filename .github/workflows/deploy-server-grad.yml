@@ -3,10 +3,12 @@ name: Deploy Grad Server on port 5000
 on:
 
   pull_request:
-    # types:
-    #   - closed
+    types:
+      - closed
     branches:
       - main
+    paths:
+      - 'server/*'
 
 jobs:
   build:

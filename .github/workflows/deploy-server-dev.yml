@@ -3,10 +3,12 @@ name: Deploy Dev Server on port 3000
 on:
 
   pull_request:
-    # types:
-    #   - closed
+    types:
+      - closed
     branches:
       - main
+    paths:
+      - 'server/*'
 
 jobs:
   build:
