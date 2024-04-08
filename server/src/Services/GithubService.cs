@@ -10,11 +10,11 @@ namespace ReleaseMonkey.Server.Services
 {
     public record CreateTagRequest
     (
-        string tag,
-        string message,
-        string gitObject,
-        string type,
-        Tagger tagger
+        string Tag,
+        string Message,
+        string GitObject,
+        string Type,
+        Tagger Tagger
     );
 
     public record Tagger(string name, string email, string date);
@@ -98,7 +98,7 @@ namespace ReleaseMonkey.Server.Services
             var requestBody = new CreateTagRequest(releaseName.Replace(" ","_"), releaseName, commit["sha"].ToString(), "commit", new Tagger(tagger.Result.Name, tagger.Result.Email, DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzz")));
             requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             requestMessage.Headers.UserAgent.Add(new ProductInfoHeaderValue("release-monkey", "api"));
-            StringContent content = new(JsonSerializer.Serialize(requestBody).Replace("gitObject","object"), Encoding.UTF8, "application/json");
+            StringContent content = new(JsonSerializer.Serialize(requestBody).Replace("GitObject","object"), Encoding.UTF8, "application/json");
             requestMessage.Content = content;
             var response = await client.SendAsync(requestMessage);
             response.EnsureSuccessStatusCode();
