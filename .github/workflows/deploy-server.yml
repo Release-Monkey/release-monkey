@@ -27,12 +27,6 @@ jobs:
           cd server
           dotnet publish -c Release -o Release
 
-    - name: List files
-      run: |
-          cd server
-          cd Release
-          ls 
-
     - name: Update Release with .env
       run: |
           cd server
@@ -45,6 +39,17 @@ jobs:
           echo "GITHUB_APP_CLIENT_SECRET=${{secrets.HUB_APP_CLIENT_SECRET }}" >> Release/.env
           echo "SMTP_USERNAME=${{secrets.SMTP_USERNAME }}" >> Release/.env
           echo "SMTP_PASSWORD=${{secrets.SMTP_PASSWORD }}" >> Release/.env
+
+    - name: List files
+      run: |
+          cd server
+          cd Release
+          ls 
+    - name: List contents of .env
+      run: |
+        cd server
+        cd Release
+        cat .env
 
     - name: Login to docker hub
       run: |
