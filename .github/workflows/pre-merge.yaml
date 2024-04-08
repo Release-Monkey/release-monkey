@@ -26,4 +26,4 @@ jobs:
 
       - name: Test Web Packaging
         working-directory: ./web
-        run: dotnet build web.sln
+        run: dotnet build ReleaseMonkeyWeb.sln

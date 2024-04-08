@@ -2,38 +2,38 @@
 resource "aws_security_group" "sql_serv_security_group" {
   name        = "sql_serv_security_group"
   description = "Security group for sql serv"
-  vpc_id= aws_vpc.release_monkey_vpc.id
+  vpc_id      = aws_vpc.release_monkey_vpc.id
 
   #Enable internet access to the database
   # Allow inbound traffic from IPv4
   ingress {
-      from_port   = 1433
-      to_port     = 1433
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"] # Allow inbound traffic from any IPv4 address
+    from_port   = 1433
+    to_port     = 1433
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow inbound traffic from any IPv4 address
   }
 
   # Allow inbound traffic from IPv6
   ingress {
-      from_port   = 1433
-      to_port     = 1433
-      protocol    = "tcp"
-      ipv6_cidr_blocks = ["::/0"] # Allow inbound traffic from any IPv6 address
+    from_port        = 1433
+    to_port          = 1433
+    protocol         = "tcp"
+    ipv6_cidr_blocks = ["::/0"] # Allow inbound traffic from any IPv6 address
   }
   tags = var.mandatory_tags
 
   ingress {
-      from_port   = 8080
-      to_port     = 8080
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"] # Allow inbound traffic from any IPv4 address
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"] # Allow inbound traffic from any IPv4 address
   }
 
-   ingress {
-      from_port   = 8080
-      to_port     = 8080
-      protocol    = "tcp"
-      ipv6_cidr_blocks = ["::/0"] # Allow inbound traffic from any IPv6 address
+  ingress {
+    from_port        = 8080
+    to_port          = 8080
+    protocol         = "tcp"
+    ipv6_cidr_blocks = ["::/0"] # Allow inbound traffic from any IPv6 address
   }
 
   # Define outbound rule to allow traffic to the EC2 instance from the RDS database
@@ -48,7 +48,7 @@ resource "aws_security_group" "sql_serv_security_group" {
 
 # Define security group for the EC2 instance
 resource "aws_security_group" "ec2_security_group" {
-  vpc_id = aws_vpc.release_monkey_vpc.id
+  vpc_id      = aws_vpc.release_monkey_vpc.id
   name        = "release_monkey_ec2_security_group"
   description = "Security group for release monkey EC2 instance"
 
@@ -60,7 +60,38 @@ resource "aws_security_group" "ec2_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-   # Define inbound rules to allow traffic from anywhere to the EC2 instance on port 22 (for SSH)
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+
+  ingress {
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 8000
+    to_port     = 8000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    
+  }
+
+  # Define inbound rules to allow traffic from anywhere to the EC2 instance on port 22 (for SSH)
   ingress {
     from_port   = 22
     to_port     = 22
