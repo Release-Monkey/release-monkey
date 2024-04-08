@@ -83,7 +83,6 @@ namespace ReleaseMonkey.Server.Services
 
         public async Task<String> ReleaseProject(string repo, string accessToken, string releaseName)
         {
-            Console.WriteLine(repo);
             HttpRequestMessage request1Message = new(HttpMethod.Get, "https://api.github.com/repos/"+repo+"/branches/master");
             request1Message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             request1Message.Headers.UserAgent.Add(new ProductInfoHeaderValue("release-monkey", "api"));
@@ -93,18 +92,6 @@ namespace ReleaseMonkey.Server.Services
             var stringResponse = await response1.Content.ReadAsStringAsync();
             var jsonResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(stringResponse)!;
             var commit = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonResponse["commit"].ToString())!;
-            Console.WriteLine(commit["sha"]);
-
-            // Console.WriteLine("-1");
-            // request1Message = new(HttpMethod.Get, "https://api.github.com/repos/" + repo + "/git/tags/78a94dcbaa0075bdb51588b11b19f318c2399a7f");
-            // request1Message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            // request1Message.Headers.UserAgent.Add(new ProductInfoHeaderValue("release-monkey", "api"));
-            // response1 = await client.SendAsync(request1Message);
-            // response1.EnsureSuccessStatusCode();
-
-            // stringResponse = await response1.Content.ReadAsStringAsync();
-            // //var jsonResponse = JsonSerializer.Deserialize<Dictionary<string, object>[]>(stringResponse)!;
-            // Console.WriteLine(stringResponse);
 
             HttpRequestMessage requestMessage = new(HttpMethod.Post, "https://api.github.com/repos/"+repo+"/git/tags");
             var tagger = GetUserInfo(accessToken);
