@@ -9,13 +9,15 @@ namespace ReleaseMonkey.Server.Controller
   public record CreateProjectRequest
   (
       string ProjectName,
-      string Repo
+      string Repo,
+      bool PublicProject
   );
 
   public record UpdateProjectRequest
   (
       string ProjectName,
-      string Repo
+      string Repo,
+      bool PublicProject
   );
 
   [ApiController]
@@ -55,18 +57,25 @@ namespace ReleaseMonkey.Server.Controller
       }
     }
 
-    [HttpGet("{id:int}/public", Name = "FetchPublicProjectById")]
-    public async Task<IActionResult> FetchPublic(int id)
+    [HttpGet("public/{id:int}", Name = "FetchPublicProjectById")]
+    public async Task<IActionResult> FetchPublicById(int id)
     {
       try
       {
-        var project = await projects.GetProjectById(id);
-        return Ok(new PublicProject(project.Id, project.Name));
+        return Ok(await projects.GetPublicProjectById(id));
       }
       catch (KeyNotFoundException e)
       {
         return NotFound(e.Message);
       }
+    }
+
+    [HttpGet("public", Name = "FetchPublicProject")]
+    public async Task<IActionResult> FetchPublic(int id)
+    {
+      
+      return Ok(await projects.GetPublicProjects());
+      
     }
 
     [HttpPost]
@@ -77,7 +86,7 @@ namespace ReleaseMonkey.Server.Controller
 
       if (userRepos.Contains(body.Repo))
       {
-        var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, user.Token);
+        var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, user.Token, body.PublicProject);
         return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
       }
       else
