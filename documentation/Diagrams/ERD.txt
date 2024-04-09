@@ -11,6 +11,7 @@ ProjectID PK int
 ProjectName varchar(200)
 Repo varchar(200) UNIQUE
 Token varchar(200)
+PublicProject bool
 
 
 UserProject
