@@ -33,6 +33,11 @@ namespace ReleaseMonkey.Server.Services
         {
             return Task.FromResult(projects.SelectProjects(modifier));
         }
+
+        public Task<List<Project>> FetchProjectsByUserId(Modifier modifier, int userId)
+        {
+            return Task.FromResult(projects.SelectProjectsByUserId(modifier, userId));
+        }
       
         public Task<Project> GetProjectById(int projectId)
         {

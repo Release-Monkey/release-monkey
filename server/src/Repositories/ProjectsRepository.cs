@@ -7,7 +7,7 @@ using System.Data;
 
 namespace ReleaseMonkey.Server.Repositories
 {
-    public class ProjectsRepository
+    public class ProjectsRepository (Db db)
     {
         public Project GetProjecById(Db db, int projectId)
         {
@@ -87,7 +87,7 @@ namespace ReleaseMonkey.Server.Repositories
             List<Project> projects = [];
 
             string sql = @"
-                SELECT ProjectID, ProjectName, Repo
+                SELECT ProjectID, ProjectName, Repo, Token
                 FROM [Project]
                 WHERE ProjectName LIKE '%' + @SearchTerm + '%'
                 ORDER BY
@@ -116,7 +116,58 @@ namespace ReleaseMonkey.Server.Repositories
                         var project = new Project(
                             reader.GetInt32("ProjectID"),
                             reader.GetString("ProjectName"),
-                            reader.GetString("Repo")
+                            reader.GetString("Repo"),
+                            reader.GetString("Token")
+                        );
+                        projects.Add(project);
+                    }
+                }
+            }
+
+            return projects;
+
+        }
+
+        public List<Project> SelectProjectsByUserId(Modifier modifier, int userId)
+        {
+            List<Project> projects = [];
+
+            string sql = @"
+                SELECT p.ProjectID, p.ProjectName, p.Repo, p.Token
+                FROM [Project] p
+                INNER JOIN UserProject up ON p.ProjectID = up.ProjectID                                                                                                                                    
+                INNER JOIN [User] u ON up.UserID = u.UserID                                                                                                                                                
+                WHERE p.ProjectName LIKE '%' + @SearchTerm + '%'
+                AND u.UserID = @UserId
+                ORDER BY
+                    (CASE WHEN @OrderBy = 'id' AND @SortDirection = 'ASC' THEN p.ProjectID END) ASC,
+                    (CASE WHEN @OrderBy = 'name' AND @SortDirection = 'ASC' THEN p.ProjectName END) ASC,
+                    (CASE WHEN @OrderBy = 'repo' AND @SortDirection = 'ASC' THEN p.Repo END) ASC,
+                    (CASE WHEN @OrderBy = 'id' AND @SortDirection = 'DESC' THEN p.ProjectID END) DESC,
+                    (CASE WHEN @OrderBy = 'name' AND @SortDirection = 'DESC' THEN p.ProjectName END) DESC,
+                    (CASE WHEN @OrderBy = 'repo' AND @SortDirection = 'DESC' THEN p.Repo END) DESC
+                OFFSET (@Page - 1) * @PageSize ROWS
+                FETCH NEXT @PageSize ROWS ONLY;
+            ";
+
+            using (SqlCommand command = new (sql, db.Connection))
+            {
+                command.Parameters.AddWithValue("@SearchTerm", modifier.searchTerm);
+                command.Parameters.AddWithValue("@OrderBy", modifier.orderBy);
+                command.Parameters.AddWithValue("@SortDirection", modifier.sort);
+                command.Parameters.AddWithValue("@Page", modifier.page);
+                command.Parameters.AddWithValue("@PageSize", modifier.size);
+                command.Parameters.AddWithValue("@UserId", userId);
+
+                using (SqlDataReader reader = db.ExecuteReader(command))
+                {
+                    while (reader.Read())
+                    {
+                        var project = new Project(
+                            reader.GetInt32("ProjectID"),
+                            reader.GetString("ProjectName"),
+                            reader.GetString("Repo"),
+                            reader.GetString("Token")
                         );
                         projects.Add(project);
                     }

@@ -27,6 +27,8 @@ namespace ReleaseMonkey.Server.Controller
 
         [HttpGet]
         public async Task<IActionResult> Fetch(string? search, string? orderBy, string? sort, int? size, int? page) {
+            var currentUser = HttpContext.Features.Get<UserWithToken>()!;
+
             var modifier = new Modifier(
                 search ?? "",
                 orderBy ?? "id",
@@ -35,7 +37,7 @@ namespace ReleaseMonkey.Server.Controller
                 page ?? (page >= 1 ? page : 1)
             );
 
-            var fetchedProjects = await projects.FetchProjects(modifier);
+            var fetchedProjects = await projects.FetchProjectsByUserId(modifier, currentUser.Id);
             return Ok(fetchedProjects);
         }
 
