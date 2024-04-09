@@ -10,6 +10,7 @@ namespace ReleaseMonkey.Server.Controller
   (
       string ProjectName,
       string Repo,
+      string Token,
       bool PublicProject
   );
 
@@ -17,6 +18,7 @@ namespace ReleaseMonkey.Server.Controller
   (
       string ProjectName,
       string Repo,
+      string Token,
       bool PublicProject
   );
 
@@ -26,11 +28,7 @@ namespace ReleaseMonkey.Server.Controller
   {
     private readonly ProjectsService projects = projects;
 
-    [HttpGet]
-    public IActionResult Fetch()
-    {
-      return Ok(projects);
-    }
+    
 
     [HttpGet("{id:int}", Name = "FetchProjectById")]
     public async Task<IActionResult> Fetch(int id)
@@ -86,8 +84,15 @@ namespace ReleaseMonkey.Server.Controller
 
       if (userRepos.Contains(body.Repo))
       {
-        var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, user.Token, body.PublicProject);
-        return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
+        var tokenRepos = await githubService.ListRepos(body.Token);
+        if (userRepos.Equals(tokenRepos)) 
+        { 
+          var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, body.Token, body.PublicProject);
+          return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
+        } else 
+        { 
+          return Forbid($"Please ensure that the personal access token inserted belongs to you and is correct");
+        }
       }
       else
       {

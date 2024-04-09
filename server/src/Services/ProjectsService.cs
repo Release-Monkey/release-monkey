@@ -28,6 +28,11 @@ namespace ReleaseMonkey.Server.Services
       }
     }
 
+    public Task<List<Project>> GetAllProjects()
+    {
+      return Task.FromResult(projects.GetProjects(db));
+    }
+
     public Task<Project> GetProjectById(int projectId)
     {
       return Task.FromResult(projects.GetProjectById(db, projectId));

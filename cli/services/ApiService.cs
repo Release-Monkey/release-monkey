@@ -57,11 +57,12 @@ namespace cli.services
       }
     }
 
-    public Task<Project> CreateProject(string projectName, string githubRepo, bool publicProject)
+    public Task<Project> CreateProject(string projectName, string githubRepo, string Token, bool publicProject)
     {
       return Post<Dictionary<string, object>, Project>("projects", new Dictionary<string, object>{
                 {"ProjectName", projectName},
                 {"Repo", githubRepo},
+                {"Token", Token},
                 {"PublicProject", publicProject}
             });
     }

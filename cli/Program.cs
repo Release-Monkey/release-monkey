@@ -37,12 +37,12 @@ internal class Program
                     await commands.PrintCurrentUser();
                     break;
                 case "create-project":
-                    if (args.Length > 2)
+                    if (args.Length > 3)
                     {
-                        if (args[3].ToLower().Equals("true")){
-                            await commands.CreateProject(args[1], args[2], true);
-                        } else if (args[3].ToLower().Equals("false")){
-                            await commands.CreateProject(args[1], args[2], false);
+                        if (args[4].ToLower().Equals("true")){
+                            await commands.CreateProject(args[1], args[2], args[3], true);
+                        } else if (args[4].ToLower().Equals("false")){
+                            await commands.CreateProject(args[1], args[2], args[3], false);
                         } else {
                             Console.WriteLine("Please enter true/false for third argument.");
                         }
@@ -50,7 +50,7 @@ internal class Program
                     }
                     else
                     {
-                        Console.WriteLine("Please provide the project name followed by the Github repo (owner/repo_name) and whether it should be public or not to create a project.");
+                        Console.WriteLine("Please provide the project name followed by the Github repo (owner/repo_name) followed by a git personal access token and whether the project should be public or not to create a project.");
                     }
                     break;
                 case "set-project":

@@ -44,11 +44,11 @@ namespace cli
       return Task.FromResult<object?>(null);
     }
 
-    public async Task CreateProject(string projectName, string githubRepo, bool publicProject)
+    public async Task CreateProject(string projectName, string githubRepo, string token, bool publicProject)
     {
       try
       {
-        var project = await apiService.CreateProject(projectName, githubRepo, publicProject);
+        var project = await apiService.CreateProject(projectName, githubRepo, token, publicProject);
         preferencesServices.SetProject(project);
         Console.WriteLine($"Project has been created. Project id is {project.Id}.");
       }
