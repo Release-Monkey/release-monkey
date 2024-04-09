@@ -3,27 +3,111 @@
 @using ReleaseMonkeyWeb.Models
 @using Blazored.LocalStorage
 
+@inject Microsoft.JSInterop.IJSRuntime JSRuntime
 @inject NavigationManager navigationManager
 @inject Services.LocalPreferencesServices preferencesServices
 @inject ILocalStorageService localStorage
+@inject Services.ApiService apiService
 
 @rendermode InteractiveServer
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, Release Monkey!</h1>
+<main class="flex justify-center items-center">
+    <section class="flex flex-col gap-y-4 w-1/2 m-4 p-4">
+        <h3 class="text-2xl">Releases</h3>
+        @if (releaseTesters == null) {
+            <p class="text-slate-400">Nothing left to approve. I see you're on top of everything.</p>
+        }
+
+        @if (releaseTesters != null) {
+            @foreach (var releaseTester in releaseTesters) {
+                <article class="flex flex-row justify-between">
+                    <div class="flex flex-row p-4 border rounded gap-x-24">
+                        <h3 class="text-xl">@releaseTester.Release.ReleaseName</h3>
+                        <h3 class="text-xl">Project @releaseTester.Release.ProjectId</h3>
+                    </div>
+                    <div class="flex flex-row justify-between gap-x-4 text-white">
+                        <button
+                            class="py-2 px-4 bg-emerald-600 rounded"
+                            @onclick="@(() => approveRelease(releaseTester))"
+                        >
+                            Approve
+                        </button>
+                        <button
+                            class="py-2 px-4 bg-red-500 rounded"
+                            @onclick="@(() => declineRelease(releaseTester))"
+                        >
+                            Decline
+                        </button>
+                    </div>
+                </article>
+            }
+        }
+    </section>
+</main>
 
 @code
 {
+    private List<ReleaseTester>? releaseTesters;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            var user = await preferencesServices.GetUser(localStorage);
+            var user = await preferencesServices.GetUser();
             if (user == null)
             {
                 navigationManager.NavigateTo("/login");
             }
+            releaseTesters = apiService.GetPendingReleases(
+                await apiService.FetchReleases()
+            );
+            StateHasChanged();
+            return;
         }
+    }
+
+    private async Task<string> togglePrompt (string message)
+    {
+        return await JSRuntime.InvokeAsync<string>("prompt", message);
+    }
+
+    private async Task approveRelease (Models.ReleaseTester releaseTester)
+    {
+        string message = await togglePrompt("Leave a comment");
+
+        await decideRelease(releaseTester, 0, message);
+    }
+
+    private async Task declineRelease (Models.ReleaseTester releaseTester)
+    {
+        string message  = await togglePrompt(
+            "Are you sure that you wish to decline this release? ATC is going to ask questions XD"
+        );
+
+        await decideRelease(releaseTester, 1, message);
+    }
+    
+    private async Task decideRelease (Models.ReleaseTester releaseTester, int decision, string message)
+    {
+        var decidedReleaseTester = new Requests.ReleaseTester(
+            releaseTester.Id,
+            releaseTester.Release.Id,
+            releaseTester.TesterId,
+            decision,
+            message
+        );
+
+        var result = await apiService.UpdateRelease(decidedReleaseTester);
+
+        if (result == null) return;
+
+        releaseTesters = apiService.GetPendingReleases(
+            await apiService.FetchReleases()
+        );
+        StateHasChanged();
+
+        return;
     }
 }

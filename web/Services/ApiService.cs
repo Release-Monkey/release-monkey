@@ -1,8 +1,6 @@
-
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Blazored.LocalStorage;
 using ReleaseMonkeyWeb.Models;
 
 namespace ReleaseMonkeyWeb.Services
@@ -11,9 +9,9 @@ namespace ReleaseMonkeyWeb.Services
     {
         private readonly HttpClient http = new();
 
-        public ApiService(LocalPreferencesServices preferencesServices, ILocalStorageService localStorage)
+        public ApiService(LocalPreferencesServices preferencesServices)
         {
-            preferencesServices.GetUser(localStorage).ContinueWith(async (getUserTask) =>
+            preferencesServices.GetUser().ContinueWith(async (getUserTask) =>
             {
                 User? user = await getUserTask;
                 if (user != null)
@@ -42,7 +40,7 @@ namespace ReleaseMonkeyWeb.Services
                 throw new ApiException($"{stringResponse}: Status code {response.StatusCode}.");
             }
         }
-
+        
         private async Task<T> Get<T>(string path) where T : class
         {
             var response = await http.GetAsync(BuildUrl(path));
@@ -63,6 +61,35 @@ namespace ReleaseMonkeyWeb.Services
             return Post<Dictionary<string, string>, User>("users", new Dictionary<string, string>{
                 {"AccessCode", accessCode}
             });
+        }
+
+        public async Task<Requests.ReleaseTester>? UpdateRelease (Requests.ReleaseTester releaseTester)
+        {
+            var response = await http.PutAsJsonAsync<Requests.ReleaseTester>(BuildUrl("release-testers"), releaseTester);
+
+            if (!response.IsSuccessStatusCode) return null;
+
+            return releaseTester;
+        }
+
+        public async Task<List<Models.ReleaseTester>> FetchReleases ()
+        {
+            var body = await Get<Dictionary<string, object>>("release-testers");
+            var releaseTesters = ((JsonElement) body["Result"]).Deserialize<List<Responses.ReleaseTester>>();
+            body = await Get<Dictionary<string, object>>("releases");
+            
+            var releases = ((JsonElement) body["Result"]).Deserialize<List<Release>>();
+            
+            return releaseTesters!.Select<Responses.ReleaseTester, Models.ReleaseTester>(x => {
+                var release = releases!.Find(y => y.Id == x.ReleaseId);
+
+                return new Models.ReleaseTester(x.Id, release!, x.TesterId, x.State, x.Comment);
+            }).ToList();
+        }
+        
+        public List<Models.ReleaseTester> GetPendingReleases (List<Models.ReleaseTester> releaseTesters)
+        {
+            return releaseTesters.Where(x => x.State == 2).ToList();
         }
     }
 

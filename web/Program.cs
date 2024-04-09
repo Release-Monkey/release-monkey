@@ -18,8 +18,8 @@ namespace ReleaseMonkeyWeb
 
             builder.Services.AddBlazoredLocalStorage();
 
-            builder.Services.AddSingleton<LocalPreferencesServices>();
-            builder.Services.AddSingleton<ApiService>();
+            builder.Services.AddScoped<LocalPreferencesServices>();
+            builder.Services.AddScoped<ApiService>();
 
             var app = builder.Build();
 

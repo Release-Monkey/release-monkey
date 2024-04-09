@@ -27,7 +27,7 @@
     {
         if (firstRender)
         {
-            var currentUser = await preferencesServices.GetUser(localStorage);
+            var currentUser = await preferencesServices.GetUser();
             if (currentUser == null)
             {
                 var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
@@ -35,7 +35,7 @@
                 if (parameters.ContainsKey("code"))
                 {
                     var user = await apiService.LoginUser(parameters["code"].ToString());
-                    await preferencesServices.SetUser(user, localStorage);
+                    await preferencesServices.SetUser(user);
                     navigationManager.NavigateTo("/");
                 };
             }
