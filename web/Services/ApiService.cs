@@ -100,7 +100,7 @@ namespace ReleaseMonkeyWeb.Services
 
         public Task<PublicProject> GetPublicProject(string projectId)
         {
-            return Get<PublicProject>($"projects/{projectId}/public");
+            return Get<PublicProject>($"projects/public/{projectId}");
         }
 
         public Task<UserProject> AddBetaTester(int projectId)

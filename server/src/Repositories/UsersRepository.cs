@@ -75,58 +75,66 @@ namespace ReleaseMonkey.Server.Repositories
             }
         }
 
-        public List<String> GetUserEmailsByIds(SqlTransaction transaction, Db db, List<int> userIds)
+        public List<string> GetUserEmailsByIds(SqlTransaction transaction, Db db, List<int> userIds)
         {
-            string sql = @"SELECT EmailAddress
+            if (userIds.Count == 0)
+            {
+                return [];
+            }
+            else
+            {
+                string sql = @"SELECT EmailAddress
                            FROM [User] WHERE UserID IN ({0})";
 
-            using SqlCommand command = new(sql, db.Connection, transaction);
+                using SqlCommand command = new(sql, db.Connection, transaction);
 
-            var idParameterList = new List<string>();
-            var index = 0;
-            foreach (var userId in userIds)
-            {
-                var paramName = "@idParam" + index;
-                command.Parameters.AddWithValue(paramName, userId);
-                idParameterList.Add(paramName);
-                index++;
-            }
-            command.CommandText = String.Format(sql, string.Join(",", idParameterList));
-            using SqlDataReader reader = db.ExecuteReader(command);
+                var idParameterList = new List<string>(userIds.Count);
+                for (int index = 0; index < userIds.Count; index++)
+                {
+                    idParameterList[index] = $"@UserId{index}";
+                    command.Parameters.Add(idParameterList[index], SqlDbType.Int).Value = userIds[index];
+                }
+                command.CommandText = string.Format(sql, string.Join(",", idParameterList));
+                using SqlDataReader reader = db.ExecuteReader(command);
 
-            List<String> emails = new List<String>();
-            while (reader.Read())
-            {
-                 emails.Add(reader.GetString("EmailAddress"));
+                List<string> emails = [];
+                while (reader.Read())
+                {
+                    emails.Add(reader.GetString("EmailAddress"));
+                }
+                return emails;
             }
-            return emails;
         }
 
         public List<String> GetUserEmailsByIds(Db db, List<int> userIds)
         {
-            string sql = @"SELECT EmailAddress
+            if (userIds.Count == 0)
+            {
+                return [];
+            }
+            else
+            {
+                string sql = @"SELECT EmailAddress
                            FROM [User] WHERE UserID IN ({0})";
 
-            using SqlCommand command = new(sql, db.Connection);
+                using SqlCommand command = new(sql, db.Connection);
 
-            var idParameterList = new List<string>();
-            var index = 0;
-            foreach (var userId in userIds)
-            {
-                var paramName = "@idParam" + index;
-                command.Parameters.AddWithValue(paramName, userId);
-                idParameterList.Add(paramName);
-                index++;
-            }
-            command.CommandText = String.Format(sql, string.Join(",", idParameterList));
-            using SqlDataReader reader = db.ExecuteReader(command);
+                var idParameterList = new List<string>(userIds.Count);
+                for (int index = 0; index < userIds.Count; index++)
+                {
+                    idParameterList[index] = $"@UserId{index}";
+                    command.Parameters.Add(idParameterList[index], SqlDbType.Int).Value = userIds[index];
+                }
+                command.CommandText = string.Format(sql, string.Join(",", idParameterList));
+                using SqlDataReader reader = db.ExecuteReader(command);
 
-            List<String> emails = new List<String>();
-            while (reader.Read())
-            {
-                emails.Add(reader.GetString("EmailAddress"));
+                List<string> emails = [];
+                while (reader.Read())
+                {
+                    emails.Add(reader.GetString("EmailAddress"));
+                }
+                return emails;
             }
-            return emails;
         }
     }
 }

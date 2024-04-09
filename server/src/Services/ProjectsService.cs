@@ -50,7 +50,7 @@ namespace ReleaseMonkey.Server.Services
 
     public List<int> GetReleaseMakerUserIds(int projectId)
     {
-      return userProjects.GetUserIdsWithRole(db, 1, projectId);
+      return userProjects.GetUserIdsWithRole(db, 0, projectId);
     }
   }
 }

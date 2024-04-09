@@ -85,13 +85,13 @@ namespace ReleaseMonkey.Server.Controller
       if (userRepos.Contains(body.Repo))
       {
         var tokenRepos = await githubService.ListRepos(body.Token);
-        if (userRepos.Equals(tokenRepos)) 
+        if (tokenRepos.Contains(body.Repo)) 
         { 
           var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, body.Token, body.PublicProject);
           return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
         } else 
-        { 
-          return Forbid($"Please ensure that the personal access token inserted belongs to you and is correct");
+        {
+          return Forbid($"Please ensure that the personal access token inserted has access to the given repo.");
         }
       }
       else
