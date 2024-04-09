@@ -44,7 +44,7 @@ namespace cli
                 return GetBuild() switch
                 {
                     Build.Developer => "http://localhost:3000",
-                    Build.Production => "http://52.210.18.60:3000",
+                    Build.Production => "http://52.210.18.60:5000",
                     _ => "http://52.210.18.60:3000"
                 };
 
