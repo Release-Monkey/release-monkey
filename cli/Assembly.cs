@@ -27,13 +27,13 @@ namespace cli
             {
                 return Build.Developer;
             }
-            else if (ExecutablePath.Contains("rel-monkey"))
+            else if (ExecutablePath.Contains("rel-monkey-beta"))
             {
-                return Build.Production;
+                return Build.Beta;
             }
             else
             {
-                return Build.Beta;
+                return Build.Production;
             }
         }
 
@@ -44,7 +44,7 @@ namespace cli
                 return GetBuild() switch
                 {
                     Build.Developer => "http://localhost:3000",
-                    Build.Production => "http://52.210.18.60:3000",
+                    Build.Production => "http://52.210.18.60:5000",
                     _ => "http://52.210.18.60:3000"
                 };
 

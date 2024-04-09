@@ -8,7 +8,10 @@ namespace cli.services
 {
   internal class ApiService
   {
-    private readonly HttpClient httpClient = new();
+    private readonly HttpClient httpClient = new()
+    {
+      Timeout = TimeSpan.FromSeconds(60*10)
+    };
 
     public ApiService(LocalPreferencesServices preferencesServices)
     {
