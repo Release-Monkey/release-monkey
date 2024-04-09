@@ -5,6 +5,7 @@ namespace ReleaseMonkey.Server.Models
     int Id,
     string Name,
     string Repo,
-    string Token
+    string Token,
+    bool PublicProject
   );
 }
