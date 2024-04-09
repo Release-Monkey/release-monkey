@@ -58,6 +58,28 @@ namespace cli
       }
     }
 
+    public async Task PublicProject(bool publicProject)
+    {
+      try
+      {
+        var oldProject = preferencesServices.GetProject();
+        if (oldProject!=null){
+          var project = await apiService.UpdateProject(oldProject.Id, oldProject.Name, oldProject.Repo, oldProject.Token, publicProject);
+          preferencesServices.SetProject(project);
+          if (publicProject){Console.WriteLine($"Project has been made public.");} else {Console.WriteLine($"Project has been made private.");}
+          
+        } else 
+        {
+          Console.WriteLine($"No project has been set");
+        }
+        
+      }
+      catch (ApiException e)
+      {
+        Console.WriteLine(e.Message);
+      }
+    }
+
     public async Task SetProject(string projectId)
     {
       try

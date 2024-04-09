@@ -4,7 +4,7 @@ namespace cli.models
 {
   internal record User(int Id, string Email, string Name, string Token);
 
-  internal record Project(int Id, string Name, string Repo, string token, bool PublicProject);
+  internal record Project(int Id, string Name, string Repo, string Token, bool PublicProject);
 
   internal record Release(int Id, string ReleaseName, int ProjectId);
 

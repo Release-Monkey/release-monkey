@@ -67,6 +67,17 @@ namespace cli.services
             });
     }
 
+    public Task<Project> UpdateProject(int projectId, string projectName, string githubRepo, string token, bool publicProject)
+    {
+      return Post<Dictionary<string, object>, Project>("projects", new Dictionary<string, object>{
+                {"Id", projectId},
+                {"ProjectName", projectName},
+                {"Repo", githubRepo},
+                {"Token", token},
+                {"PublicProject", publicProject}
+            });
+    }
+
     public Task<UserProject> AddTester(string email, int projectId)
     {
       return Post<Dictionary<string, string>, UserProject>("user-projects", new Dictionary<string, string>{
