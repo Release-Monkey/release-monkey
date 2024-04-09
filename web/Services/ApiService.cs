@@ -7,12 +7,21 @@ using ReleaseMonkeyWeb.Models;
 
 namespace ReleaseMonkeyWeb.Services
 {
+    public enum Build
+    {
+        Developer,
+        Beta,
+        Production,
+    }
+
     public class ApiService(LocalPreferencesServices preferencesServices)
     {
         static readonly int BetaTesterId = 2;
 
         private readonly HttpClient http = new();
         private User? CurrentUser;
+
+        public static Build CurrentBuild {get; set; } = Build.Developer;
 
         public async Task SetStorage(ILocalStorageService localStorage)
         {
@@ -23,7 +32,31 @@ namespace ReleaseMonkeyWeb.Services
             }
         }
 
-        private static string BuildUrl(string path) => $"http://localhost:3000/{path}";
+        public void ConfigureEnv(string path)
+        {
+            if(path.Contains("localhost"))
+            {
+                CurrentBuild = Build.Developer;
+            }
+            else if(path.Contains(":8000"))
+            {
+                CurrentBuild = Build.Beta;
+            }
+            else
+            {
+                CurrentBuild = Build.Production;
+            }
+        }
+
+        private static string BuildUrl(string path)
+        {
+            return CurrentBuild switch
+            {
+                Build.Developer => $"http://localhost:3000/{path}",
+                Build.Beta => $"http://52.210.18.60:3000/{path}",
+                _ => $"http://52.210.18.60:5000/{path}",
+            };
+        }
 
         private async Task<R> Post<T, R>(string path, T body) where T : class where R : class
         {

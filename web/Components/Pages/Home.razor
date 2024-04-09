@@ -2,10 +2,12 @@
 
 @using ReleaseMonkeyWeb.Models
 @using Blazored.LocalStorage
+@using ReleaseMonkeyWeb.Services
 
 @inject NavigationManager navigationManager
 @inject Services.LocalPreferencesServices preferencesServices
 @inject ILocalStorageService localStorage
+@inject ApiService apiService
 
 @rendermode InteractiveServer
 
@@ -19,6 +21,7 @@
     {
         if (firstRender)
         {
+            apiService.ConfigureEnv(navigationManager.Uri);
             var user = await preferencesServices.GetUser(localStorage);
             if (user == null)
             {
@@ -27,3 +30,4 @@
         }
     }
 }
+    using ReleaseMonkeyWeb.Services;

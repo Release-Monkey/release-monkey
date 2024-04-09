@@ -1,8 +1,8 @@
 name: "Terraform action"
-on:
+on: 
   push:
-    tags:
-      - 'v*-beta'
+    branches:
+      - main
 
 permissions:
   id-token: write # This is required for aws oidc connection

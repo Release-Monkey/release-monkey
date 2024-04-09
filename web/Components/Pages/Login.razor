@@ -27,6 +27,7 @@
     {
         if (firstRender)
         {
+            apiService.ConfigureEnv(navigationManager.Uri);
             await apiService.SetStorage(localStorage);
             var currentUser = await preferencesServices.GetUser(localStorage);
             if (currentUser == null)
@@ -49,7 +50,7 @@
 
     public string AuthorizeUrl()
     {
-        var clientId = Environment.GetEnvironmentVariable("GITHUB_APP_CLIENT_ID");
+        var clientId = "Iv1.2a4a99768f6b514e";
         var redirect = $"{navigationManager.BaseUri}login";
         return $"https://github.com/login/oauth/authorize?client_id={clientId}&redirect_uri={redirect}&scope=repo";
     }
