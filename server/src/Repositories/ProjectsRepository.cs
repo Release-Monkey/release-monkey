@@ -8,6 +8,22 @@ namespace ReleaseMonkey.Server.Repositories
 {
     public class ProjectsRepository
     {
+        public List<Project> GetProjects(Db db)
+        {
+            string sql = @"SELECT ProjectID, ProjectName, Repo, Token, PublicProject FROM [Project]";
+            using SqlCommand command = new(sql, db.Connection);
+
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            List<Project> result = new List<Project>();
+
+            while (reader.Read())
+            {
+                result.Add(new Project(reader.GetInt32("ProjectID"), reader.GetString("ProjectName"), reader.GetString("Repo"), reader.GetString("Token"), reader.GetBoolean("PublicProject")));
+            }
+            return result;
+        }
+
         public Project GetProjecById(Db db, int projectId)
         {
             string sql = @"SELECT ProjectID, ProjectName, Repo, Token, PublicProject FROM [Project] WHERE ProjectID=@ProjectID";
