@@ -29,6 +29,12 @@ namespace ReleaseMonkey.Server.Services
       }
     }
 
+    public Task<Project> UpdateProject(int projectId, string projectName, string githubRepo, string token, bool publicProject)
+    {
+      Project project = projects.UpdateProject(db, projectId, projectName, githubRepo, token, publicProject);
+      return Task.FromResult(project);
+    }
+
     public Task<List<Project>> GetProjectsByUserId(Modifier modifier, int userId)
     {
       return Task.FromResult(projects.GetProjectsByUserId(modifier, userId));

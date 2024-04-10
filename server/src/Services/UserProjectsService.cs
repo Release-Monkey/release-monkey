@@ -23,7 +23,7 @@ namespace ReleaseMonkey.Server.Services
         {
           UserProject userProject = userProjects.InsertUserProject(transaction, db, userId, projectId, role);
           var project = projects.GetProjectById(transaction, db, projectId);
-          var user = users.GetUserById(userId);
+          var user = users.GetUserById(transaction, userId);
           Email.sendEmail([user.Email], "releases", project.Name, "", Email.WelcomeNewBetaTester);
           transaction.Commit();
           return await Task.FromResult(userProject);

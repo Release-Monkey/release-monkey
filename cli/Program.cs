@@ -37,7 +37,7 @@ internal class Program
                     await commands.PrintCurrentUser();
                     break;
                 case "create-project":
-                    if (args.Length > 3)
+                    if (args.Length > 4)
                     {
                         if (args[4].ToLower().Equals("true")){
                             await commands.CreateProject(args[1], args[2], args[3], true);
@@ -46,12 +46,26 @@ internal class Program
                         } else {
                             Console.WriteLine("Please enter true/false for third argument.");
                         }
-                        
+                    } else if (args.Length > 3)
+                    {
+                        await commands.CreateProject(args[1], args[2], args[3], false);
                     }
                     else
                     {
-                        Console.WriteLine("Please provide the project name followed by the Github repo (owner/repo_name) followed by a git personal access token and whether the project should be public or not to create a project.");
+                        Console.WriteLine("Please provide the project name followed by the Github repo (owner/repo_name) followed by a git personal access token and optionally whether the project should be public or not to create a project.");
                     }
+                    break;
+                case "public-project":
+                    if (args.Length > 1)
+                    {
+                        if (args[1].ToLower().Equals("true")){
+                            await commands.PublicProject(true);
+                        } else if (args[1].ToLower().Equals("false")){
+                            await commands.PublicProject(false);
+                        } else {
+                            Console.WriteLine("Please enter true/false for third argument.");
+                        }
+                    } 
                     break;
                 case "set-project":
                     if (args.Length > 1)

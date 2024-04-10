@@ -79,6 +79,31 @@ namespace ReleaseMonkey.Server.Repositories
             }
         }
 
+        public Project UpdateProject(Db db, int projectId, string projectName, string Repo, string Token, bool PublicProject)
+        {
+            string sql = @"UPDATE [Project] SET ProjectName=@ProjectName, Repo=@Repo, Token=@Token, PublicProject=@PublicProject OUTPUT INSERTED.ProjectID, INSERTED.ProjectName, INSERTED.Repo, INSERTED.Token, INSERTED.PublicProject WHERE ProjectID=@ProjectID;";
+
+            using (SqlCommand command = new(sql, db.Connection))
+            {
+                command.Parameters.Add("@ProjectID", System.Data.SqlDbType.Int).Value = projectId;
+                command.Parameters.Add("@ProjectName", System.Data.SqlDbType.VarChar).Value = projectName;
+                command.Parameters.Add("@Repo", System.Data.SqlDbType.VarChar).Value = Repo;
+                command.Parameters.Add("@Token", System.Data.SqlDbType.VarChar).Value = Token;
+                command.Parameters.Add("@PublicProject", System.Data.SqlDbType.Bit).Value = PublicProject;
+
+                using SqlDataReader reader = db.ExecuteReader(command);
+
+                if (reader.Read())
+                {
+                    return new Project(reader.GetInt32("ProjectID"), reader.GetString("ProjectName"), reader.GetString("Repo"), reader.GetString("Token"), reader.GetBoolean("PublicProject"));
+                }
+                else
+                {
+                    throw new KeyNotFoundException($"Update failed");
+                }
+            }
+        }
+
         public Project GetProjectById(Db db, int projectId)
         {
             string sql = @"SELECT ProjectName, Repo, Token, PublicProject FROM [Project]
