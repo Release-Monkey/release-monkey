@@ -22,7 +22,7 @@ jobs:
 
       - name: Mark production
         working-directory: ./cli/bin/Release/net8.0/win-x64/publish
-        run: ren cli.exe rel-monkey.exe
+        run: ren cli.exe rmk.exe
 
       - name: Upload Release
         uses: marvinpinto/action-automatic-releases@latest
