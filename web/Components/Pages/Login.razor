@@ -1,0 +1,57 @@
+@page "/login"
+
+@using Microsoft.AspNetCore.WebUtilities
+@using ReleaseMonkeyWeb.Models
+@using Blazored.LocalStorage
+
+@inject Microsoft.JSInterop.IJSRuntime JSRuntime
+@inject NavigationManager navigationManager
+@inject Services.ApiService apiService
+@inject Services.LocalPreferencesServices preferencesServices
+@inject ILocalStorageService localStorage
+
+@rendermode InteractiveServer
+
+<PageTitle>Auth</PageTitle>
+
+<main class="flex justify-center items-center h-screen">
+    <section class="flex flex-col items-center gap-y-4">
+        <h1 class="text-xl">Release Monkey</h1>
+        <a href="@AuthorizeUrl()" role="button" class="rounded py-2 px-4 bg-blue-500 text-white">Continue with
+            GitHub</a>
+    </section>
+</main>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            apiService.ConfigureEnv(navigationManager.Uri);
+            await apiService.SetStorage(localStorage);
+            var currentUser = await preferencesServices.GetUser(localStorage);
+            if (currentUser == null)
+            {
+                var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+                var parameters = QueryHelpers.ParseQuery(uri.Query);
+                if (parameters.ContainsKey("code"))
+                {
+                    var user = await apiService.LoginUser(parameters["code"].ToString());
+                    await preferencesServices.SetUser(user, localStorage);
+                    navigationManager.NavigateTo("/");
+                };
+            }
+            else
+            {
+                navigationManager.NavigateTo("/");
+            }
+        }
+    }
+
+    public string AuthorizeUrl()
+    {
+        var clientId = "Iv1.2a4a99768f6b514e";
+        var redirect = $"{navigationManager.BaseUri}login";
+        return $"https://github.com/login/oauth/authorize?client_id={clientId}&redirect_uri={redirect}&scope=repo";
+    }
+}

@@ -6,9 +6,21 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
+        try
+        {
+            await ParseArgs(args);
+        }
+        catch (ApiException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    private static async Task ParseArgs(string[] args)
+    {
         LocalPreferencesServices localPreferencesServices = new();
         ApiService apiService = new(localPreferencesServices);
-        GithubService githubService = new("Iv1.2a4a99768f6b514e", 30001);
+        GithubService githubService = new("Iv1.2a4a99768f6b514e", 3001);
         Commands commands = new(localPreferencesServices, apiService, githubService);
 
         if (args.Length > 0)
@@ -25,13 +37,20 @@ internal class Program
                     await commands.PrintCurrentUser();
                     break;
                 case "create-project":
-                    if (args.Length > 1)
+                    if (args.Length > 3)
                     {
-                        await commands.CreateProject(args[1], args[2]);
+                        if (args[4].ToLower().Equals("true")){
+                            await commands.CreateProject(args[1], args[2], args[3], true);
+                        } else if (args[4].ToLower().Equals("false")){
+                            await commands.CreateProject(args[1], args[2], args[3], false);
+                        } else {
+                            Console.WriteLine("Please enter true/false for third argument.");
+                        }
+                        
                     }
                     else
                     {
-                        Console.WriteLine("Please provide the project name followed by the Github repo (owner/repo_name) to create a project.");
+                        Console.WriteLine("Please provide the project name followed by the Github repo (owner/repo_name) followed by a git personal access token and whether the project should be public or not to create a project.");
                     }
                     break;
                 case "set-project":
@@ -46,7 +65,7 @@ internal class Program
                     break;
                 case "project":
                     await commands.PrintProject();
-                    break;                 
+                    break;
                 case "list-projects":
                     await commands.ListProjects();
                     break;
@@ -62,13 +81,13 @@ internal class Program
                     }
                     break;
                 case "create-release":
-                    if (args.Length > 1)
+                    if (args.Length > 2)
                     {
-                        await commands.CreateRelease(args[1]);
+                        await commands.CreateRelease(args[1], args[2]);
                     }
                     else
                     {
-                        Console.WriteLine("Please provide a name for the project");
+                        Console.WriteLine("Please provide a name and a download link for the release.");
                     }
                     break;
                 case "list-releases":
@@ -83,6 +102,25 @@ internal class Program
                     {
                         Console.WriteLine("Please provide the id of the release to approve.");
                     }
+                    break;
+                case "release-key":
+                    await commands.PrintReleaseKey();
+                    break;
+                case "load-release-key":
+                    if (args.Length > 1)
+                    {
+                        await commands.LoadReleaseKey(args[1]);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please provide a release key to load.");
+                    }
+                    break;
+                case "repos":
+                    await commands.ListRepos();
+                    break;
+                case "version":
+                    commands.PrintVersion();
                     break;
                 case "help":
                     commands.PrintHelp();

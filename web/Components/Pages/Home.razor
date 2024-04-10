@@ -1,0 +1,33 @@
+﻿@page "/"
+
+@using ReleaseMonkeyWeb.Models
+@using Blazored.LocalStorage
+@using ReleaseMonkeyWeb.Services
+
+@inject NavigationManager navigationManager
+@inject Services.LocalPreferencesServices preferencesServices
+@inject ILocalStorageService localStorage
+@inject ApiService apiService
+
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, Release Monkey!</h1>
+
+@code
+{
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            apiService.ConfigureEnv(navigationManager.Uri);
+            var user = await preferencesServices.GetUser(localStorage);
+            if (user == null)
+            {
+                navigationManager.NavigateTo("/login");
+            }
+        }
+    }
+}
+    using ReleaseMonkeyWeb.Services;

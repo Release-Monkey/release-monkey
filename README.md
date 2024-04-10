@@ -1,5 +1,11 @@
 # Release Monkey
 
+Release automation made easier.
+
+## Are you a Grad?
+
+See [Release Monkey for your project](documentation/Developer.md) for instructions on how to use Release Monkey for your project. Alternatively, reach out to one of our team members for assistance with setting up your project with `rel-monkey`, our capable cli.
+
 ## Terraform setup
 - Download and install terraform (https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)\
 - Set AWS environment variables
@@ -30,10 +36,10 @@ Where `COMMAND` is the command to be executed. See `Program.cs` for the availabl
 You must be in the /cli folder to build the CLI.
 
 ```bash
-$ dotnet publish -c Release
+$ dotnet publish -r win-x64 -c Release --self-contained true
 ```
 
-The executable file can be found in folder `cli\bin\Release\net8.0\publish`
+The executable file can be found in folder `cli\bin\Release\net8.0\win-x64\publish`
 
 ## Access the database using MS SQL Server studio
 - Open ms sql sever studio
@@ -50,7 +56,7 @@ The executable file can be found in folder `cli\bin\Release\net8.0\publish`
  - Role
     - 0 = Releaser
     - 1 = Tester
-    - 2 = Both
+    - 2 = Beta Tester
  - State
     - 0 = Accepted
     - 1 = Rejected

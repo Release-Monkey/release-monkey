@@ -24,13 +24,13 @@ namespace ReleaseMonkey.Server.Services
             return Task.FromResult(releases.GetReleaseById(db, releaseId));
         }
 
-        public Task<Release> CreateRelease(string releaseName, int projectId)
+        public Task<Release> CreateRelease(string releaseName, int projectId, string downloadLink)
         {
             using (SqlTransaction transaction = db.Connection.BeginTransaction())
             {
                 try
                 {
-                    Release release = releases.InsertRelease(transaction, db, releaseName, projectId);
+                    Release release = releases.InsertRelease(transaction, db, releaseName, projectId, downloadLink);
                     List<UserProject> userProjectList = userProjects.GetTestersForProject(transaction, db, projectId);
                     List<UserProject> testerList = userProjectList.Where(u => u.Role == 1).ToList();
                     foreach (UserProject userProject in testerList)
@@ -43,7 +43,7 @@ namespace ReleaseMonkey.Server.Services
                     var emails = from u in userProjectList
                                  select u.UserId;
 
-                    Email.sendEmail(users.GetUserEmailsByIds(transaction, db, emails.ToList()), releaseName, project.Name, 0);
+                    Email.sendEmail(users.GetUserEmailsByIds(transaction, db, emails.ToList()), releaseName, project.Name, downloadLink, Email.BeginRelease);
 
                     transaction.Commit();
                     return Task.FromResult(release);
