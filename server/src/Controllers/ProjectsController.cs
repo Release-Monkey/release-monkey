@@ -124,13 +124,9 @@ namespace ReleaseMonkey.Server.Controller
       if (userRepos.Contains(body.Repo))
       {
         var tokenRepos = await githubService.ListRepos(body.Token);
-        foreach (var tokenRepo in tokenRepos)
-        {
-          Console.WriteLine(tokenRepo);
-        }
         if (tokenRepos.Contains(body.Repo))
         {
-          var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, body.Token, body.PublicProject);
+          var createdProject = await projects.UpdateProject(body.Id, body.ProjectName, body.Repo, body.Token, body.PublicProject);
           return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
         }
         else

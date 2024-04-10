@@ -46,10 +46,8 @@ namespace cli.services
     {
       string jsonStr = JsonSerializer.Serialize(body);
       StringContent content = new(jsonStr, Encoding.UTF8, "application/json");
-
       var response = await httpClient.PutAsync(BuildUrl(path), content);
       var stringResponse = await response.Content.ReadAsStringAsync();
-
       if (response.IsSuccessStatusCode)
       {
         return JsonSerializer.Deserialize<R>(stringResponse)!;
@@ -94,6 +92,15 @@ namespace cli.services
                 {"Token", token},
                 {"PublicProject", publicProject}
             });
+    }
+
+    public ReleaseTester UpdateReleaseTester(int releaseTesterId, int state, string comment)
+    {
+      return Put<Dictionary<string, object>, ReleaseTester>("release-testers", new Dictionary<string, object>{
+                {"Id", releaseTesterId},
+                {"State", state},
+                {"Comment", comment}
+            }).Result;
     }
 
     public Task<UserProject> AddTester(string email, int projectId)

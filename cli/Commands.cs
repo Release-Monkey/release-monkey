@@ -236,7 +236,23 @@ namespace cli
       return Task.FromResult<object?>(null);
     }
 
-    public Task ApproveRelease(string releaseId) { throw new NotImplementedException(); }
+    public Task UpdateReleaseTester(int releaseId, int state, string comment)
+    {
+      if (state == 0)
+      {
+        var releaseTester = apiService.UpdateReleaseTester(releaseId, state, comment);
+        return Task.FromResult<object>(releaseTester);
+      } else if (state == 1)
+      {
+        var releaseTester = apiService.UpdateReleaseTester(releaseId, state, comment);
+        return Task.FromResult<object>(releaseTester);
+      } else
+      {
+        Console.WriteLine($"Inserted state is incorrect.");
+        return Task.FromResult<object?>(null);
+      }
+      
+    }
 
     public async Task ListRepos()
     {

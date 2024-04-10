@@ -8,6 +8,10 @@ namespace cli.models
 
   internal record Release(int Id, string ReleaseName, int ProjectId);
 
+  internal record ReleaseTester(int Id, int ReleaseId, int TesterId, int State, string Comment);
+
+  internal record UpdateReleaseTesterModel(int Id, int State, string Comment);
+
   internal record ReleaseKey(User User, Project Project);
 
   internal record UserProject(int Id, int UserId, int ProjectId, int Role);
