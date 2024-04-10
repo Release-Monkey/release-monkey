@@ -62,7 +62,7 @@ namespace ReleaseMonkey.Server.Repositories
 
     public List<Project> GetProjectsByUserId(Db db, int userId)
     {
-      string sql = @"SELECT P.ProjectID, ProjectName, Repo, Token, PublicProject FROM [Project] P INNER JOIN [UserProject] U ON P.ProjectID = U.ProjectID WHERE UserID=@UserID";
+      string sql = @"SELECT DISTINCT P.ProjectID, ProjectName, Repo, Token, PublicProject FROM [Project] P INNER JOIN [UserProject] U ON P.ProjectID = U.ProjectID WHERE UserID=@UserID";
       using SqlCommand command = new(sql, db.Connection);
       command.Parameters.Add("@UserID", SqlDbType.Int).Value = userId;
 

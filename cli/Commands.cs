@@ -127,7 +127,7 @@ namespace cli
         List<Project> projects = apiService.GetProjectsByUserId(id).Result;
         foreach (Project project in projects)
         {
-          Console.WriteLine($"name: {project.Name} repo: ({project.Repo}) public: {project.PublicProject}");
+          Console.WriteLine($"project id: {project.Id}, name: {project.Name}, repo: {project.Repo}, public: {project.PublicProject}");
         }
       }
       catch
@@ -242,16 +242,18 @@ namespace cli
       {
         var releaseTester = apiService.UpdateReleaseTester(releaseId, state, comment);
         return Task.FromResult<object>(releaseTester);
-      } else if (state == 1)
+      }
+      else if (state == 1)
       {
         var releaseTester = apiService.UpdateReleaseTester(releaseId, state, comment);
         return Task.FromResult<object>(releaseTester);
-      } else
+      }
+      else
       {
         Console.WriteLine($"Inserted state is incorrect.");
         return Task.FromResult<object?>(null);
       }
-      
+
     }
 
     public async Task ListRepos()
