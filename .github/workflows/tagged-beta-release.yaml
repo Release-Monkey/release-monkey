@@ -33,3 +33,16 @@ jobs:
           prerelease: true
           files: |
             cli/bin/Release/net8.0/win-x64/publish/*.exe
+
+      - name: Download rel-monkey
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/Release-Monkey/release-monkey/releases/download/latest/rel-monkey.exe" -OutFile "rel-monkey.exe"
+        
+      - name: Load Release Key
+        run: ./rel-monkey load-release-key "${{ secrets.RELEASE_KEY }}"
+
+      - name: Publish Release
+        shell: pwsh
+        run: ./rel-monkey create-release "${{ github.ref_name}}".replace("beta", "prod") "https://github.com/Release-Monkey/release-monkey/releases/tag/${{ github.ref_name}}"
+      
