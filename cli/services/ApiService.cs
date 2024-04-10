@@ -42,6 +42,24 @@ namespace cli.services
       }
     }
 
+    private async Task<R> Put<T, R>(string path, T body) where T : class where R : class
+    {
+      string jsonStr = JsonSerializer.Serialize(body);
+      StringContent content = new(jsonStr, Encoding.UTF8, "application/json");
+
+      var response = await httpClient.PutAsync(BuildUrl(path), content);
+      var stringResponse = await response.Content.ReadAsStringAsync();
+
+      if (response.IsSuccessStatusCode)
+      {
+        return JsonSerializer.Deserialize<R>(stringResponse)!;
+      }
+      else
+      {
+        throw new ApiException($"{stringResponse}: Status code {response.StatusCode}.");
+      }
+    }
+
     private async Task<T> Get<T>(string path) where T : class
     {
       var response = await httpClient.GetAsync(BuildUrl(path));
@@ -69,7 +87,7 @@ namespace cli.services
 
     public Task<Project> UpdateProject(int projectId, string projectName, string githubRepo, string token, bool publicProject)
     {
-      return Post<Dictionary<string, object>, Project>("projects", new Dictionary<string, object>{
+      return Put<Dictionary<string, object>, Project>("projects", new Dictionary<string, object>{
                 {"Id", projectId},
                 {"ProjectName", projectName},
                 {"Repo", githubRepo},

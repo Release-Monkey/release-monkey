@@ -86,17 +86,14 @@ namespace ReleaseMonkey.Server.Controller
             if (userRepos.Contains(body.Repo))
             {
                 var tokenRepos = await githubService.ListRepos(body.Token);
-                foreach (var tokenRepo in tokenRepos)
+                if (tokenRepos.Contains(body.Repo))
                 {
-                    Console.WriteLine(tokenRepo);
-                }
-                if (tokenRepos.Contains(body.Repo)) 
-                { 
                     var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, body.Token, body.PublicProject);
                     return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
-                } else 
+                }
+                else
                 {
-                  return Forbid($"Please ensure that the personal access token inserted has access to the given repo.");
+                    return Forbid($"Please ensure that the personal access token inserted has access to the given repo.");
                 }
             }
             else
@@ -118,13 +115,14 @@ namespace ReleaseMonkey.Server.Controller
                 {
                     Console.WriteLine(tokenRepo);
                 }
-                if (tokenRepos.Contains(body.Repo)) 
-                { 
+                if (tokenRepos.Contains(body.Repo))
+                {
                     var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, body.Token, body.PublicProject);
                     return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
-                } else 
+                }
+                else
                 {
-                  return Forbid($"Please ensure that the personal access token inserted has access to the given repo.");
+                    return Forbid($"Please ensure that the personal access token inserted has access to the given repo.");
                 }
             }
             else
