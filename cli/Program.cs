@@ -144,7 +144,7 @@ internal class Program
                     break;
                 case "reject-release":
                      try
-                    {
+                     {
                         int i = Int32.Parse(args[1]);
                         if (args.Length > 2)
                         {

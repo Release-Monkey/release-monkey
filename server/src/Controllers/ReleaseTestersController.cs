@@ -25,7 +25,6 @@ namespace ReleaseMonkey.Server.Controller
         [HttpGet]
         public IActionResult Fetch()
         {
-            Console.WriteLine(0);
             return Ok(releaseTesters.GetAllReleaseTesters());
         }
 
@@ -51,8 +50,6 @@ namespace ReleaseMonkey.Server.Controller
         [HttpPut]
         public async Task<IActionResult> Update(UpdateReleaseTesterRequest body)
         {
-            Console.WriteLine(body.Id);
-            Console.WriteLine(0);
             var updatedReleaseTester = await releaseTesters.UpdateReleaseTester(body.Id, body.State, body.Comment);
             return CreatedAtRoute("FetchReleaseTesterById", new { updatedReleaseTester.Id }, updatedReleaseTester);
         }
