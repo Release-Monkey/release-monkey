@@ -109,6 +109,7 @@ namespace ReleaseMonkey.Server.Repositories
 
                 if (reader.Read())
                 {
+                    Console.WriteLine(reader.GetInt32("ReleaseID"));
                     return new ReleaseTester(releaseTesterId, reader.GetInt32("ReleaseID"), reader.GetInt32("TesterID"), reader.GetInt32("State"), reader.GetString("Comment"));
                 }
                 else

@@ -39,14 +39,20 @@ internal class Program
                 case "create-project":
                     if (args.Length > 4)
                     {
-                        if (args[4].ToLower().Equals("true")){
+                        if (args[4].ToLower().Equals("true"))
+                        {
                             await commands.CreateProject(args[1], args[2], args[3], true);
-                        } else if (args[4].ToLower().Equals("false")){
+                        }
+                        else if (args[4].ToLower().Equals("false"))
+                        {
                             await commands.CreateProject(args[1], args[2], args[3], false);
-                        } else {
+                        }
+                        else
+                        {
                             Console.WriteLine("Please enter true/false for third argument.");
                         }
-                    } else if (args.Length > 3)
+                    }
+                    else if (args.Length > 3)
                     {
                         await commands.CreateProject(args[1], args[2], args[3], false);
                     }
@@ -58,14 +64,19 @@ internal class Program
                 case "public-project":
                     if (args.Length > 1)
                     {
-                        if (args[1].ToLower().Equals("true")){
+                        if (args[1].ToLower().Equals("true"))
+                        {
                             await commands.PublicProject(true);
-                        } else if (args[1].ToLower().Equals("false")){
+                        }
+                        else if (args[1].ToLower().Equals("false"))
+                        {
                             await commands.PublicProject(false);
-                        } else {
+                        }
+                        else
+                        {
                             Console.WriteLine("Please enter true/false for third argument.");
                         }
-                    } 
+                    }
                     break;
                 case "set-project":
                     if (args.Length > 1)
@@ -108,13 +119,51 @@ internal class Program
                     await commands.ListReleases();
                     break;
                 case "approve-release":
-                    if (args[0].Length > 1)
+                    try
                     {
-                        await commands.ApproveRelease(args[1]);
+                        int i = Int32.Parse(args[1]);
+                        if (args.Length > 2)
+                        {
+                            await commands.UpdateReleaseTester(i, 0, args[2]);
+                            Console.WriteLine($"Release has been approved");
+                        }
+                        else if (args.Length > 1)
+                        {
+                            await commands.UpdateReleaseTester(i, 0, "");
+                            Console.WriteLine($"Release has been approved");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please provide the id of the release to approve.");
+                        }
                     }
-                    else
+                    catch
                     {
                         Console.WriteLine("Please provide the id of the release to approve.");
+                    }
+                    break;
+                case "reject-release":
+                     try
+                    {
+                        int i = Int32.Parse(args[1]);
+                        if (args.Length > 2)
+                        {
+                            await commands.UpdateReleaseTester(i, 1, args[2]);
+                            Console.WriteLine($"Release has been rejected");
+                        }
+                        else if (args.Length > 1)
+                        {
+                            await commands.UpdateReleaseTester(i, 1, "");
+                            Console.WriteLine($"Release has been rejected");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please provide a valid number for the id of the release to reject.");
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Please provide the id of the release to reject and optionally a comment.");
                     }
                     break;
                 case "release-key":

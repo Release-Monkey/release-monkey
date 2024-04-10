@@ -79,7 +79,7 @@ namespace ReleaseMonkey.Server.Repositories
             }
         }
 
-        public Project UpdateProject(Db db, int projectId, string projectName, string Repo, string Token, bool PublicProject)
+        public Project UpdateProject(Db db, int projectId, string projectName, string repo, string token, bool publicProject)
         {
             string sql = @"UPDATE [Project] SET ProjectName=@ProjectName, Repo=@Repo, Token=@Token, PublicProject=@PublicProject OUTPUT INSERTED.ProjectID, INSERTED.ProjectName, INSERTED.Repo, INSERTED.Token, INSERTED.PublicProject WHERE ProjectID=@ProjectID;";
 
@@ -87,10 +87,9 @@ namespace ReleaseMonkey.Server.Repositories
             {
                 command.Parameters.Add("@ProjectID", System.Data.SqlDbType.Int).Value = projectId;
                 command.Parameters.Add("@ProjectName", System.Data.SqlDbType.VarChar).Value = projectName;
-                command.Parameters.Add("@Repo", System.Data.SqlDbType.VarChar).Value = Repo;
-                command.Parameters.Add("@Token", System.Data.SqlDbType.VarChar).Value = Token;
-                command.Parameters.Add("@PublicProject", System.Data.SqlDbType.Bit).Value = PublicProject;
-
+                command.Parameters.Add("@Repo", System.Data.SqlDbType.VarChar).Value = repo;
+                command.Parameters.Add("@Token", System.Data.SqlDbType.VarChar).Value = token;
+                command.Parameters.Add("@PublicProject", System.Data.SqlDbType.Bit).Value = publicProject;
                 using SqlDataReader reader = db.ExecuteReader(command);
 
                 if (reader.Read())
