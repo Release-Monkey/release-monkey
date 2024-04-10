@@ -10,7 +10,7 @@ namespace cli.services
   {
     private readonly HttpClient httpClient = new()
     {
-      Timeout = TimeSpan.FromSeconds(60*10)
+      Timeout = TimeSpan.FromSeconds(60 * 10)
     };
 
     public ApiService(LocalPreferencesServices preferencesServices)
@@ -115,6 +115,11 @@ namespace cli.services
     public Task<Project> GetProjectById(int projectId)
     {
       return Get<Project>($"projects/{projectId}");
+    }
+
+    public Task<List<Project>> GetProjectsByUserId(int userId)
+    {
+      return Get<List<Project>>($"projects/user/{userId}");
     }
 
     public Task<Release> CreateRelease(string releaseName, int projectId, string downloadLink)

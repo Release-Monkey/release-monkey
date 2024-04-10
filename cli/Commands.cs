@@ -119,7 +119,23 @@ namespace cli
       return Task.FromResult<object?>(null);
     }
 
-    public Task ListProjects() { throw new NotImplementedException(); }
+    public Task ListProjects()
+    {
+      try
+      {
+        int id = preferencesServices.GetUser()!.Id;
+        List<Project> projects = apiService.GetProjectsByUserId(id).Result;
+        foreach (Project project in projects)
+        {
+          Console.WriteLine($"name: {project.Name} repo: ({project.Repo}) public: {project.PublicProject}");
+        }
+      }
+      catch
+      {
+        Console.WriteLine("No projects found.");
+      }
+      return Task.FromResult<object?>(null);
+    }
 
     public async Task AddTesters(List<string> testerEmails)
     {
