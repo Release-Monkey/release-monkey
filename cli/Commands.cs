@@ -297,5 +297,32 @@ namespace cli
     {
       Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything. More information available in README at https://github.com/Release-Monkey/release-monkey.");
     }
+
+    public void PrintCommands()
+    {
+      Console.WriteLine("Commands:");
+      Console.WriteLine("========");
+      Console.WriteLine("login: ");
+      Console.WriteLine("logout: ");
+      Console.WriteLine("user: ");
+      Console.WriteLine("create-project NAME REPO TOKEN PUBLIC: ");
+      Console.WriteLine("public-project Public: ");
+      Console.WriteLine("set-project Project ID: ");
+      Console.WriteLine("current-project: ");
+      Console.WriteLine("list-projects: ");
+      Console.WriteLine("pending: ");
+      Console.WriteLine("project: ");
+      Console.WriteLine("add-testers EMAIL1 EMAIL2 ...: ");
+      Console.WriteLine("create-release ");
+      Console.WriteLine("list-releases: ");
+      Console.WriteLine("approve-release RELEASE_TESTER_ID COMMENT: ");
+      Console.WriteLine("reject-release RELEASE_TESTER_ID COMMENT: ");
+      Console.WriteLine("release-key: ");
+      Console.WriteLine("load-release-key RELEASE_KEY: ");
+      Console.WriteLine("update-release-tester RELEASE_ID STATE COMMENT: ");
+      Console.WriteLine("repos: ");
+      Console.WriteLine("version: ");
+      Console.WriteLine("help: ");
+    }
   }
 }

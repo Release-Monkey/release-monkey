@@ -190,6 +190,7 @@ internal class Program
           break;
         case "help":
           commands.PrintHelp();
+          commands.PrintCommands();
           break;
         default:
           Console.WriteLine("Invalid command given.");
