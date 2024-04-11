@@ -1,7 +1,7 @@
 name: Flyway Migrations Dev
 
 on:
-  # push:
+  push:
   #   tags:
   #     - 'v*-beta'
   
