@@ -16,13 +16,21 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Build CLI
+      - name: Build CLI Windows
         working-directory: ./cli
         run: dotnet publish -r win-x64 -c Release --self-contained true
 
-      - name: Mark beta
+      - name: Build CLI Linux
+        working-directory: ./cli
+        run: dotnet publish -r linux-x64 -c Release --self-contained true
+
+      - name: Mark Beta Windows
         working-directory: ./cli/bin/Release/net8.0/win-x64/publish
         run: ren cli.exe rmkb.exe
+
+      - name: Mark Beta Linux
+        working-directory: ./cli/bin/Release/net8.0/linux-x64/publish
+        run: ren cli rmkb
 
       - name: Upload Release
         uses: marvinpinto/action-automatic-releases@latest
@@ -33,6 +41,7 @@ jobs:
           prerelease: true
           files: |
             cli/bin/Release/net8.0/win-x64/publish/*.exe
+            cli/bin/Release/net8.0/linux-x64/publish/rmkb
 
       - name: Download rel-monkey
         shell: pwsh
