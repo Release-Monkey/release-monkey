@@ -12,7 +12,7 @@ namespace cli.models
 
   internal record UpdateReleaseTesterModel(int Id, int State, string Comment);
 
-  internal record PendingReleases(int Id, int ReleaseId, string ReleaseName, int Repo, string DownloadLink);
+  internal record PendingRelease(int ReleaseTesterId, string ReleaseName, string ProjectName, string DownloadLink);
 
   internal record ReleaseKey(User User, Project Project);
 

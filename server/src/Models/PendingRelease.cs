@@ -1,11 +1,9 @@
 namespace ReleaseMonkey.Server.Models
 {
-  public record Release
-  (
-    int Id,
+  public record PendingRelease(
+    int ReleaseTesterId,
     string ReleaseName,
-    int ProjectId,
+    string ProjectName,
     string DownloadLink
   );
-
 }

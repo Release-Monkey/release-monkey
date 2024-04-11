@@ -129,9 +129,9 @@ namespace cli.services
       return Get<List<Project>>($"projects/user/{userId}");
     }
 
-    public Task<List<PendingReleases>> GetPendingReleasesByUserId(int userId)
+    public Task<List<PendingRelease>> GetPendingReleasesByUserId(int userId)
     {
-      return Get<List<PendingReleases>>($"pending/user/{userId}");
+      return Get<List<PendingRelease>>($"releases/user/{userId}");
     }
 
     public Task<Release> CreateRelease(string releaseName, int projectId, string downloadLink)

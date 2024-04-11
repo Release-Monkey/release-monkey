@@ -142,15 +142,23 @@ namespace cli
       try
       {
         int id = preferencesServices.GetUser()!.Id;
-        List<PendingReleases> pendingReleases = apiService.GetPendingReleasesByUserId(id).Result;
-        foreach (PendingReleases pendingRelease in pendingReleases)
+        List<PendingRelease> pendingReleases = apiService.GetPendingReleasesByUserId(id).Result;
+
+        if (pendingReleases.Count == 0)
         {
-          Console.WriteLine($"Release id: {pendingRelease.ReleaseId}, release name: {pendingRelease.ReleaseName}, repo: {pendingRelease.Repo}, download link: {pendingRelease.DownloadLink}");
+          Console.WriteLine("You have no pending releases.");
+        }
+        else
+        {
+          foreach (PendingRelease pendingRelease in pendingReleases)
+          {
+            Console.WriteLine($"Release tester id: {pendingRelease.ReleaseTesterId}, release name: {pendingRelease.ReleaseName}, project name: {pendingRelease.ProjectName}, download link: {pendingRelease.DownloadLink}");
+          }
         }
       }
       catch
       {
-        Console.WriteLine("No projects found.");
+        Console.WriteLine("No pending releases found error.");
       }
       return Task.FromResult<object?>(null);
     }
