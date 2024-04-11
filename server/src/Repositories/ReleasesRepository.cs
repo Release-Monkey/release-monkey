@@ -5,7 +5,7 @@ using System.Data;
 
 namespace ReleaseMonkey.Server.Repositories
 {
-    public class ReleasesRepository
+    public class ReleasesRepository (Db db)
     {
         public List<Release> GetAllReleases(Db db)
         {
@@ -69,6 +69,40 @@ namespace ReleaseMonkey.Server.Repositories
             int releaseId = (int)command.ExecuteScalar();  
             return new Release(releaseId, releaseName, projectId, downloadLink);
 
+        }
+
+        public List<Release> SelectReleasesByUserId (int userId)
+        {
+            List<Release> releases = [];
+
+            string sql = @"
+                SELECT r.ReleaseID, r.ReleaseName, r.ProjectID, r.DownloadLink FROM (	
+	                SELECT * FROM UserProject up
+	                WHERE up.UserID = @UserId
+                ) AS up
+                INNER JOIN [Release] r ON up.ProjectID = r.ProjectID;
+            ";
+
+            using (SqlCommand command = new (sql, db.Connection))
+            {
+                command.Parameters.AddWithValue("@UserId", userId);
+
+                using (SqlDataReader reader = db.ExecuteReader(command))
+                {
+                    while (reader.Read())
+                    {
+                        var release = new Release (
+                            reader.GetInt32("ReleaseID"),
+                            reader.GetString("ReleaseName"),
+                            reader.GetInt32("ProjectID"),
+                            reader.IsDBNull("DownloadLink") ? "" : reader.GetString("DownloadLink")
+                        );
+                        releases.Add(release);
+                    }
+                }
+            }
+
+            return releases;
         }
     }
 }

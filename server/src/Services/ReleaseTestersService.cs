@@ -20,6 +20,11 @@ namespace ReleaseMonkey.Server.Services
             return Task.FromResult(releaseTesters.GetReleaseTestersByReleaseId(db, releaseId));
         }
 
+        public Task<List<ReleaseTester>> GetReleaseTestersByTesterId(int testerId)
+        {
+            return Task.FromResult(releaseTesters.GetReleaseTestersByTesterId(db, testerId));
+        }
+
         public Task<ReleaseTester> GetReleaseTesterById(int releaseTesterId)
         {
             return Task.FromResult(releaseTesters.GetReleaseTesterById(db, releaseTesterId));

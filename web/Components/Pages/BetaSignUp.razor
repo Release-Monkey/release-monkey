@@ -14,13 +14,13 @@
 
 <PageTitle>Beta Sign up</PageTitle>
 
-@if (Project is null)
+@if (Project == null)
 {
-    <h1>Loading...</h1>
+    <div class="lds-facebook"><div></div><div></div><div></div></div>
 }
 else
 {
-    <h1>Sign for @Project.Name beta testing</h1>
+    <h1>Sign up for @Project.Name beta testing</h1>
     <p>Sign up as a beta tester for this project. You will get notified when new releases are made.</p>
     <button @onclick="OnSignUp" >Sign Up</button>
 }
@@ -35,7 +35,7 @@ else
         if (firstRender)
         {
             apiService.ConfigureEnv(navigationManager.Uri);
-            await apiService.SetStorage(localStorage);
+            await apiService.SetStorage();
 
             try
             {
@@ -51,7 +51,7 @@ else
 
     public async Task OnSignUp()
     {
-        var user = await preferencesServices.GetUser(localStorage);
+        var user = await preferencesServices.GetUser();
         if(user == null)
         {
            var confirmLogin = await jsRuntime.InvokeAsync<bool>("confirm", "Please sign in with your github account before you join this project.");
@@ -62,14 +62,22 @@ else
         }
         else
         {
+            var tmp = Project;
+
             try
             {
-                await apiService.AddBetaTester(Project!.Id);
+                var projectId = Project!.Id;
+                Project = null;
+                StateHasChanged();
+
+                await apiService.AddBetaTester(projectId);
                 navigationManager.NavigateTo("/");
             }
             catch(ApiException e)
             {
                 await jsRuntime.InvokeVoidAsync("alert", e.Message);
+                
+                Project = tmp;
             }
         }
     }

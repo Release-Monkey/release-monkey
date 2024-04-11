@@ -9,9 +9,9 @@ namespace ReleaseMonkey.Server.Services
 {
     public class ReleasesService(ReleasesRepository releases, ReleaseTestersRepository releaseTesters, UserProjectsRepository userProjects, ProjectsRepository projects, UsersRepository users, Db db)
     {
-        public Task<List<Release>> GetAllReleases() 
+        public Task<List<Release>> GetAllReleases(int userId) 
         {
-            return Task.FromResult(releases.GetAllReleases(db));
+            return Task.FromResult(releases.SelectReleasesByUserId(userId));
         }
 
         public Task<List<Release>> GetReleasesByProjectId(int projectId)

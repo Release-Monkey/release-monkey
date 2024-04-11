@@ -1,6 +1,0 @@
-@CLIENT_ID = 527ca76c9121b85da825
-@CLIENT_SECRET = 4e46f318b446c424346d55b7e7570f9601e27c6b
-@REDIRECT = "http://localhost"
-@GITHUB_URL = https://github.com/login/oauth/authorize
-
-GET {{GITHUB_URL}}?client_id={{CLIENT_ID}}&redirect={{REDIRECT}}&scope=repo HTTP/1.1

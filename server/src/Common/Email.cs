@@ -16,7 +16,7 @@ namespace ReleaseMonkey.src.Common
     public static int WelcomeNewBetaTester = 4;
 
     private static List<String> body = [
-        "A new release has been created for <project>, please begin testing. You can download the release to test at <link>.",
+        "A new release has been created for <project>, please begin testing. You can download the release to test at <link>.\n\nPlease provide feedback for this release here <home>.\n\nThe <project> Team",
             "The release <release> has been approved",
             "The release <release> has been rejected",
             "Hi,\n\nYou have been added as a primary tester for <project>. Your feedback is highly"
@@ -35,7 +35,11 @@ namespace ReleaseMonkey.src.Common
         MailAddress from = new MailAddress("releasemonkey01@gmail.com");
         MailMessage email = new MailMessage();
         email.Subject = projectName + ": " + releaseName;
-        email.Body = body[type].Replace("<project>", projectName).Replace("<release>", releaseName).Replace("<link>", downloadLink);
+        email.Body = body[type]
+          .Replace("<project>", projectName)
+          .Replace("<release>", releaseName)
+          .Replace("<link>", downloadLink)
+          .Replace("<home>", Environment.GetEnvironmentVariable("WEB_HOME"));
         email.From = from;
         foreach (string toAddress in toAddresses)
         {

@@ -39,6 +39,22 @@ namespace ReleaseMonkey.Server.Repositories
             return releaseTesters;
         }
 
+        public List<ReleaseTester> GetReleaseTestersByTesterId(Db db, int testerId)
+        {
+            List<ReleaseTester> releaseTesters = new List<ReleaseTester>();
+            string sql = @"SELECT ReleaseTesterID, ReleaseID, TesterID, State, Comment FROM [ReleaseTester] WHERE TesterID=@TesterID";
+            using SqlCommand command = new(sql, db.Connection);
+            command.Parameters.Add("@TesterID", SqlDbType.Int).Value = testerId;
+
+            using SqlDataReader reader = db.ExecuteReader(command);
+
+            while (reader.Read())
+            {
+                releaseTesters.Add(new ReleaseTester(reader.GetInt32("ReleaseTesterID"), reader.GetInt32("ReleaseID"), reader.GetInt32("TesterID"), reader.GetInt32("State"), reader.GetString("Comment")));
+            }
+            return releaseTesters;
+        }
+
         public ReleaseTester GetReleaseTesterById(Db db, int releaseTesterId)
         {
             string sql = @"SELECT ReleaseTesterID, ReleaseID, TesterID, State, Comment FROM [ReleaseTester] WHERE ReleaseTesterID=@ReleaseTesterID";
