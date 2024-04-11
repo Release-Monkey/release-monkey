@@ -137,6 +137,32 @@ namespace cli
       return Task.FromResult<object?>(null);
     }
 
+    public Task ListPendingReleases()
+    {
+      try
+      {
+        int id = preferencesServices.GetUser()!.Id;
+        List<PendingRelease> pendingReleases = apiService.GetPendingReleasesByUserId(id).Result;
+
+        if (pendingReleases.Count == 0)
+        {
+          Console.WriteLine("You have no pending releases.");
+        }
+        else
+        {
+          foreach (PendingRelease pendingRelease in pendingReleases)
+          {
+            Console.WriteLine($"Release tester id: {pendingRelease.ReleaseTesterId}, release name: {pendingRelease.ReleaseName}, project name: {pendingRelease.ProjectName}, download link: {pendingRelease.DownloadLink}");
+          }
+        }
+      }
+      catch
+      {
+        Console.WriteLine("No pending releases found error.");
+      }
+      return Task.FromResult<object?>(null);
+    }
+
     public async Task AddTesters(List<string> testerEmails)
     {
       var project = preferencesServices.GetProject();

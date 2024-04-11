@@ -12,6 +12,8 @@ namespace cli.models
 
   internal record UpdateReleaseTesterModel(int Id, int State, string Comment);
 
+  internal record PendingRelease(int ReleaseTesterId, string ReleaseName, string ProjectName, string DownloadLink);
+
   internal record ReleaseKey(User User, Project Project);
 
   internal record UserProject(int Id, int UserId, int ProjectId, int Role);
