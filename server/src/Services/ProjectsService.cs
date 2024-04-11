@@ -28,9 +28,20 @@ namespace ReleaseMonkey.Server.Services
       }
     }
 
+    public Task<Project> UpdateProject(int projectId, string projectName, string githubRepo, string token, bool publicProject)
+    {
+      Project project = projects.UpdateProject(db, projectId, projectName, githubRepo, token, publicProject);
+      return Task.FromResult(project);
+    }
+
     public Task<List<Project>> GetAllProjects()
     {
       return Task.FromResult(projects.GetProjects(db));
+    }
+
+    public Task<List<Project>> GetProjectsByUserId(int userId)
+    {
+      return Task.FromResult(projects.GetProjectsByUserId(db, userId));
     }
 
     public Task<Project> GetProjectById(int projectId)
@@ -50,7 +61,7 @@ namespace ReleaseMonkey.Server.Services
 
     public List<int> GetReleaseMakerUserIds(int projectId)
     {
-      return userProjects.GetUserIdsWithRole(db, 1, projectId);
+      return userProjects.GetUserIdsWithRole(db, 0, projectId);
     }
   }
 }

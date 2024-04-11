@@ -10,7 +10,7 @@ namespace cli.services
   {
     private readonly HttpClient httpClient = new()
     {
-      Timeout = TimeSpan.FromSeconds(60*10)
+      Timeout = TimeSpan.FromSeconds(60 * 10)
     };
 
     public ApiService(LocalPreferencesServices preferencesServices)
@@ -32,6 +32,22 @@ namespace cli.services
       var response = await httpClient.PostAsync(BuildUrl(path), content);
       var stringResponse = await response.Content.ReadAsStringAsync();
 
+      if (response.IsSuccessStatusCode)
+      {
+        return JsonSerializer.Deserialize<R>(stringResponse)!;
+      }
+      else
+      {
+        throw new ApiException($"{stringResponse}: Status code {response.StatusCode}.");
+      }
+    }
+
+    private async Task<R> Put<T, R>(string path, T body) where T : class where R : class
+    {
+      string jsonStr = JsonSerializer.Serialize(body);
+      StringContent content = new(jsonStr, Encoding.UTF8, "application/json");
+      var response = await httpClient.PutAsync(BuildUrl(path), content);
+      var stringResponse = await response.Content.ReadAsStringAsync();
       if (response.IsSuccessStatusCode)
       {
         return JsonSerializer.Deserialize<R>(stringResponse)!;
@@ -67,6 +83,26 @@ namespace cli.services
             });
     }
 
+    public Task<Project> UpdateProject(int projectId, string projectName, string githubRepo, string token, bool publicProject)
+    {
+      return Put<Dictionary<string, object>, Project>("projects", new Dictionary<string, object>{
+                {"Id", projectId},
+                {"ProjectName", projectName},
+                {"Repo", githubRepo},
+                {"Token", token},
+                {"PublicProject", publicProject}
+            });
+    }
+
+    public ReleaseTester UpdateReleaseTester(int releaseTesterId, int state, string comment)
+    {
+      return Put<Dictionary<string, object>, ReleaseTester>("release-testers", new Dictionary<string, object>{
+                {"Id", releaseTesterId},
+                {"State", state},
+                {"Comment", comment}
+            }).Result;
+    }
+
     public Task<UserProject> AddTester(string email, int projectId)
     {
       return Post<Dictionary<string, string>, UserProject>("user-projects", new Dictionary<string, string>{
@@ -86,6 +122,11 @@ namespace cli.services
     public Task<Project> GetProjectById(int projectId)
     {
       return Get<Project>($"projects/{projectId}");
+    }
+
+    public Task<List<Project>> GetProjectsByUserId(int userId)
+    {
+      return Get<List<Project>>($"projects/user/{userId}");
     }
 
     public Task<Release> CreateRelease(string releaseName, int projectId, string downloadLink)

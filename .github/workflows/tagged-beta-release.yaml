@@ -22,7 +22,7 @@ jobs:
 
       - name: Mark beta
         working-directory: ./cli/bin/Release/net8.0/win-x64/publish
-        run: ren cli.exe rel-monkey-beta.exe
+        run: ren cli.exe rmkb.exe
 
       - name: Upload Release
         uses: marvinpinto/action-automatic-releases@latest
@@ -33,3 +33,16 @@ jobs:
           prerelease: true
           files: |
             cli/bin/Release/net8.0/win-x64/publish/*.exe
+
+      - name: Download rel-monkey
+        shell: pwsh
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/Release-Monkey/release-monkey/releases/download/latest/rmk.exe" -OutFile "rmk.exe"
+        
+      - name: Load Release Key
+        run: ./rmk load-release-key "${{ secrets.RELEASE_KEY }}"
+
+      - name: Publish Release
+        shell: pwsh
+        run: ./rmk create-release "${{ github.ref_name}}".replace("beta", "prod") "https://github.com/Release-Monkey/release-monkey/releases/tag/${{ github.ref_name}}"
+      

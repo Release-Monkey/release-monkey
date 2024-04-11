@@ -35,7 +35,7 @@ else
         if (firstRender)
         {
             apiService.ConfigureEnv(navigationManager.Uri);
-            await apiService.SetStorage();
+            await apiService.SetStorage(localStorage);
 
             try
             {
@@ -51,7 +51,7 @@ else
 
     public async Task OnSignUp()
     {
-        var user = await preferencesServices.GetUser();
+        var user = await preferencesServices.GetUser(localStorage);
         if(user == null)
         {
            var confirmLogin = await jsRuntime.InvokeAsync<bool>("confirm", "Please sign in with your github account before you join this project.");

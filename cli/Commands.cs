@@ -58,6 +58,36 @@ namespace cli
       }
     }
 
+    public async Task PublicProject(bool publicProject)
+    {
+      try
+      {
+        var oldProject = preferencesServices.GetProject();
+        if (oldProject != null)
+        {
+          var project = await apiService.UpdateProject(oldProject.Id, oldProject.Name, oldProject.Repo, oldProject.Token, publicProject);
+          preferencesServices.SetProject(project);
+          if (publicProject)
+          {
+            Console.WriteLine($"Project has been made public.");
+          }
+          else
+          {
+            Console.WriteLine($"Project has been made private.");
+          }
+        }
+        else
+        {
+          Console.WriteLine($"No project has been set");
+        }
+
+      }
+      catch (ApiException e)
+      {
+        Console.WriteLine(e.Message);
+      }
+    }
+
     public async Task SetProject(string projectId)
     {
       try
@@ -89,7 +119,23 @@ namespace cli
       return Task.FromResult<object?>(null);
     }
 
-    public Task ListProjects() { throw new NotImplementedException(); }
+    public Task ListProjects()
+    {
+      try
+      {
+        int id = preferencesServices.GetUser()!.Id;
+        List<Project> projects = apiService.GetProjectsByUserId(id).Result;
+        foreach (Project project in projects)
+        {
+          Console.WriteLine($"project id: {project.Id}, name: {project.Name}, repo: {project.Repo}, public: {project.PublicProject}");
+        }
+      }
+      catch
+      {
+        Console.WriteLine("No projects found.");
+      }
+      return Task.FromResult<object?>(null);
+    }
 
     public async Task AddTesters(List<string> testerEmails)
     {
@@ -116,7 +162,7 @@ namespace cli
         }
       }
     }
-    
+
     public async Task CreateRelease(string releaseName, string downloadLink)
     {
       var currentProject = preferencesServices.GetProject();
@@ -190,7 +236,25 @@ namespace cli
       return Task.FromResult<object?>(null);
     }
 
-    public Task ApproveRelease(string releaseId) { throw new NotImplementedException(); }
+    public Task UpdateReleaseTester(int releaseId, int state, string comment)
+    {
+      if (state == 0)
+      {
+        var releaseTester = apiService.UpdateReleaseTester(releaseId, state, comment);
+        return Task.FromResult<object>(releaseTester);
+      }
+      else if (state == 1)
+      {
+        var releaseTester = apiService.UpdateReleaseTester(releaseId, state, comment);
+        return Task.FromResult<object>(releaseTester);
+      }
+      else
+      {
+        Console.WriteLine($"Inserted state is incorrect.");
+        return Task.FromResult<object?>(null);
+      }
+
+    }
 
     public async Task ListRepos()
     {
@@ -206,6 +270,6 @@ namespace cli
     public void PrintHelp()
     {
       Console.WriteLine("Welcome to Release Monkey. Use CLI to do everything. More information available in README at https://github.com/Release-Monkey/release-monkey.");
-    }    
+    }
   }
 }

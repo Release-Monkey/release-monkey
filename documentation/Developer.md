@@ -26,7 +26,7 @@ Where command can be any of the collowing commands:
 4. `help` Prints a help message with links to learning resources.
 5. `version` Prints the version of rel-monkey you have.
 6. `repos` Lists all the repos the currently signed in user has access to on Github. You may want to run this before creating a project.
-7. `create-project PROJECT_NAME` Creates a new project with the given name. The current project will automatically be set to the new project. See `set-project.
+7. `create-project PROJECT_NAME GITHUB_REPO PERSONAL_ACCESS_TOKEN IS_PUBLIC` Creates a new project with the given name. The current project will automatically be set to the new project. See `set-project`. Paste GITHUB_REPO the same way it was printed by the `repo` command. You have also paste a PERSONAL_ACCESS_TOKEN (Github) that has the repo scope on Github. IS_PUBLIC can be true or false. If true, your project will get a public url for others to join as beta testers.
 8. `set-project PROJECT_ID` Sets the current project to the project with the given id. We use a 'current project as context' approach so you do not have to specify the project id for every command.
 9. `project` Prints the current project.
 10. `list-projects` Lists all your projects (NOT IMPLEMENTED YET).
