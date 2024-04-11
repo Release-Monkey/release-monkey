@@ -1,0 +1,86 @@
+@page "/project/{projectId:int}/testers"
+
+@inject NavigationManager navigationManager
+@inject Services.ApiService apiService
+@inject Services.LocalPreferencesServices preferencesServices
+@inject IJSRuntime jsRuntime
+
+@rendermode InteractiveServer
+
+<PageTitle>Add Testers</PageTitle>
+
+<main class="flex flex-col h-screen justify-center items-center m-4 gap-y-24">
+    @if (IsAddingTester) {
+        <div class="lds-facebook"><div></div><div></div><div></div></div>
+    }
+    else {
+        <section class="flex flex-col items-center justify-center h-screen w-1/2">
+            <EditForm Model="@tester" FormName="tester" OnValidSubmit="OnSubmit" class="flex flex-col gap-y-4 p-8 border rounded">
+                <label for="email">Enter your tester's email</label>
+                <InputText id="email" class="form-control border rounded" @bind-Value="tester.Email" />
+                <div class="flex flex-row justify-end gap-x-4">
+                    <a role="button" class="py-2 px-4 bg-slate-400 rounded text-white" href="/">Cancel</a>
+                    <button type="submit" class="py-2 px-4 bg-blue-600 rounded text-white">Save</button>
+                </div>
+            </EditForm>
+        </section>
+    }
+</main>
+
+@code {
+    [Parameter]
+    public int projectId { get; set; }
+
+    [SupplyParameterFromForm]
+    private Models.TesterEmail tester { get; set; } 
+
+    private Models.Project project { get; set; }
+
+    private Boolean IsAddingTester { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        apiService.ConfigureEnv(navigationManager.Uri);
+        await apiService.SetStorage();
+        var user = await preferencesServices.GetUser();
+        if (user == null)
+        {
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        tester = new ()
+        {
+            Email = "",
+        };
+    }
+
+    public async Task OnSubmit()
+    {
+        IsAddingTester = true;
+        StateHasChanged();
+
+        var result = await apiService.AddTester(tester.Email, projectId);
+
+        if (result != null) tester.Email = "";
+
+        IsAddingTester = false;
+        StateHasChanged();
+
+        if (result == null) {
+            await toggleAlert("Error adding tester!");
+            return;
+        }
+
+        await toggleAlert("Tester added successfully!");
+    }
+
+    private async Task toggleAlert (string message)
+    {
+        await jsRuntime.InvokeVoidAsync("alert", message);
+    }
+}

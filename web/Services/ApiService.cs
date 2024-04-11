@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using ReleaseMonkeyWeb.Models;
+using ReleaseMonkeyWeb.Requests;
 
 namespace ReleaseMonkeyWeb.Services
 {
@@ -137,6 +138,25 @@ namespace ReleaseMonkeyWeb.Services
                 {"ProjectId", projectId},
                 {"Role", BetaTesterId}
             });
+        }
+
+        public Task<Project> CreateProject(Project project)
+        {
+            return Post<Project, Project>("projects", project);
+        }
+
+        public Task<Dictionary<string, object>> AddTester(string email, int projectId)
+        {
+            return Post<Dictionary<string, object>, Dictionary<string, object>>("user-projects", new Dictionary<string, object>{
+                { "Email", email },
+                { "ProjectId", projectId },
+                { "Role", 1 },
+            });
+        }
+
+        public Task<List<Responses.Project>> FetchProjects()
+        {
+            return Get<List<Responses.Project>>($"projects/user/{CurrentUser.Id}");
         }
     }
 

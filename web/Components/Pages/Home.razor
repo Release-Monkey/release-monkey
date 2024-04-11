@@ -15,47 +15,74 @@
 <PageTitle>Home</PageTitle>
 
 <main class="flex justify-center items-center">
-    <section class="flex flex-col gap-y-4 w-1/2 m-4 p-4">
-        <h3 class="text-2xl">Releases</h3>
-        @if (releaseTesters == null) {
-            <div class="lds-facebook"><div></div><div></div><div></div></div>
-        }
+    <section class="flex flex-col gap-y-48 w-1/2 m-4 p-4">
+        <section class="flex flex-col gap-y-8">
+            <h3 class="text-2xl">Releases</h3>
+            @if (releaseTesters == null) {
+                <div class="lds-facebook"><div></div><div></div><div></div></div>
+            } else {
+                @if (releaseTesters.Count() == 0) {
+                    <p class="text-slate-400">Nothing left to approve. I see you're on top of everything.</p>
+                }
 
-        @if (releaseTesters != null) {
-
-            @if (releaseTesters.Count() == 0) {
-                <p class="text-slate-400">Nothing left to approve. I see you're on top of everything.</p>
+                @foreach (var releaseTester in releaseTesters) {
+                    <article class="flex flex-row justify-between">
+                        <div class="flex flex-row p-4 border rounded gap-x-24">
+                            <h3 class="text-xl">@releaseTester.Release.ReleaseName</h3>
+                            <h3 class="text-xl">Project @releaseTester.Release.ProjectId</h3>
+                        </div>
+                        <div class="flex flex-row justify-between gap-x-4 text-white">
+                            <button
+                                class="py-2 px-4 bg-emerald-600 rounded"
+                                @onclick="@(() => approveRelease(releaseTester))"
+                            >
+                                Approve
+                            </button>
+                            <button
+                                class="py-2 px-4 bg-red-500 rounded"
+                                @onclick="@(() => declineRelease(releaseTester))"
+                            >
+                                Decline
+                            </button>
+                        </div>
+                    </article>
+                }
             }
+        </section>
 
-            @foreach (var releaseTester in releaseTesters) {
-                <article class="flex flex-row justify-between">
-                    <div class="flex flex-row p-4 border rounded gap-x-24">
-                        <h3 class="text-xl">@releaseTester.Release.ReleaseName</h3>
-                        <h3 class="text-xl">Project @releaseTester.Release.ProjectId</h3>
-                    </div>
-                    <div class="flex flex-row justify-between gap-x-4 text-white">
-                        <button
-                            class="py-2 px-4 bg-emerald-600 rounded"
-                            @onclick="@(() => approveRelease(releaseTester))"
-                        >
-                            Approve
-                        </button>
-                        <button
-                            class="py-2 px-4 bg-red-500 rounded"
-                            @onclick="@(() => declineRelease(releaseTester))"
-                        >
-                            Decline
-                        </button>
-                    </div>
-                </article>
+        <section class="flex flex-col gap-y-8">
+            <header class="flex flex-row gap-x-8">
+                <h3 class="text-2xl">Projects</h3>
+                <a class="py-2 px-4 bg-blue-600 text-white rounded" href="/project">Create Project</a>
+            </header>
+
+            @if (projects == null) {
+                <div class="lds-facebook"><div></div><div></div><div></div></div>
+            } else {
+                @foreach (var project in projects)
+                {
+                    <a href="@ProjectUrl(project.Id)">
+                        <article class="flex flex-row gap-x-24 border rounded p-4">
+                            <p>@project.Name</p>
+                            <p>@project.Repo</p>
+                            <p></p>
+                            @if (project.PublicProject) {
+                                <p>Public</p>
+                            } else {
+                                <p>Public</p>
+                            }
+                        </article>
+                    </a>
+                }
             }
-        }
+        </section>
     </section>
 </main>
 
 @code
 {
     private List<ReleaseTester>? releaseTesters;
+    private List<Responses.Project>? projects;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -71,6 +98,8 @@
             releaseTesters = apiService.GetPendingReleases(
                 await apiService.FetchReleases()
             );
+
+            projects = await apiService.FetchProjects();
             StateHasChanged();
             return;
         }
@@ -118,4 +147,6 @@
 
         return;
     }
+
+    private static string ProjectUrl (int id) => $"/project/{id}/testers";
 }

@@ -1,0 +1,83 @@
+@page "/project"
+
+@inject NavigationManager navigationManager
+@inject Services.LocalPreferencesServices preferencesServices
+@inject Services.ApiService apiService
+
+@rendermode InteractiveServer
+
+<PageTitle>Create Project</PageTitle>
+
+<main class="flex flex-col h-screen items-center m-4">
+    <h1 class="text-2xl">Create Project</h1>
+    <section class="flex flex-col justify-center h-screen">
+        <EditForm Model="@project" FormName="project" OnValidSubmit="OnSubmit" class="flex flex-col gap-y-4 p-8 border rounded">
+            <DataAnnotationsValidator />
+            <div class="flex flex-col gap-y-4">
+                <label for="name" class="form-label">Name</label>
+                <InputText id="name" class="form-control border rounded" @bind-Value="project.ProjectName" />
+            </div>
+            <div class="flex flex-col gap-y-4">
+                <label for="repo" class="form-label">Repo</label>
+                <InputText id="repo" class="form-control border rounded" @bind-Value="project.Repo" />
+            </div>
+            <div class="flex flex-col gap-y-4">
+                <label for="token" class="form-label">Token</label>
+                <InputText id="token" class="form-control border rounded" @bind-Value="project.Token" />
+            </div>
+            <div class="flex flex-row gap-x-2">
+                <label for="public" class="form-label">Public Project?</label>
+                <InputCheckbox id="public" class="form-control" @bind-Value="project.PublicProject" />
+            </div>
+            <ValidationSummary class="mt-4" />
+            <div class="flex flex-row justify-end gap-x-4">
+                <a role="button" class="py-2 px-4 bg-slate-400 rounded text-white" href="/">Cancel</a>
+                <button type="submit" class="py-2 px-4 bg-blue-600 rounded text-white">Save</button>
+            </div>
+        </EditForm>
+    </section>
+</main>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Models.Project project { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (Id is null)
+        {
+            project = new ()
+            {
+                ProjectName = "",
+                Repo = "",
+                Token = "",
+                PublicProject = false,
+            };
+        }
+    }
+
+    protected async void OnAfterRenderAsync(Boolean firstRender)
+    {
+        if (!firstRender) return;
+
+        var user = await preferencesServices.GetUser();
+        if (user == null)
+        {
+            navigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task OnSubmit ()
+    {
+        if (project == null) return;
+
+        if (Id != null) return;
+        
+        var newProject = await apiService.CreateProject(project);
+        navigationManager.NavigateTo("/");
+        return;
+    }
+}
