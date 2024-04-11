@@ -35,6 +35,9 @@ Where command can be any of the collowing commands:
 13. `list-releases` Lists all releases for the current project.
 14. `release-key` Prints a base64 encoding of the current project and user. This encoding is meant to stored as a secret for your GITHUB workflows to enable automated releases from Github.
 15. `load-release-key BASE64_ENCDOING` Sets the current user and project from the given base64 encoded release key. Use This to sign into rel-monkey from environments that do not have Web Browsers.
+16. `pending` Lists all pending/not-approved releases with their RELEASE_TESTER_ID
+17. `approve-release RELEASE_TESTER_ID COMMENT` Marks your release tester as approved. You would normally do this after testing the release and confirming you are happy.
+18. `reject-release RELEASE_TESTER_ID COMMENT` Marks your release tester as rejected. You would normally do this after testing the release and finding bugs/issues that need to be resolved before this release makes it to production.
 
 ## The Web Client (For Testers)
 
