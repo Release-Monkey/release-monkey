@@ -315,8 +315,8 @@ namespace cli
       Console.WriteLine("add-testers EMAIL1 EMAIL2 ...: ");
       Console.WriteLine("create-release ");
       Console.WriteLine("list-releases: ");
-      Console.WriteLine("approve-release RELEASE_TESTER_ID: ");
-      Console.WriteLine("reject-release RELEASE_TESTER_ID: ");
+      Console.WriteLine("approve-release RELEASE_TESTER_ID COMMENT: ");
+      Console.WriteLine("reject-release RELEASE_TESTER_ID COMMENT: ");
       Console.WriteLine("release-key: ");
       Console.WriteLine("load-release-key RELEASE_KEY: ");
       Console.WriteLine("update-release-tester RELEASE_ID STATE COMMENT: ");
