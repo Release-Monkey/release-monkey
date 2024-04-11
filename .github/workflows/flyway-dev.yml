@@ -2,8 +2,8 @@ name: Flyway Migrations Dev
 
 on:
   push:
-  #   tags:
-  #     - 'v*-beta'
+    tags:
+      - 'v*-beta'
   
 env:
   FLYWAY_VERSION: 9.16.3

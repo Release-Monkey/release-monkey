@@ -2,8 +2,8 @@ name: Flyway Migrations Grad
 
 on:
   push:
-  #   tags:
-  #     - 'v*-prod'
+    tags:
+      - 'v*-prod'
 
 env:
   FLYWAY_VERSION: 9.16.3
