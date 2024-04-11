@@ -35,7 +35,8 @@ jobs:
           echo "GITHUB_APP_CLIENT_SECRET=${{secrets.HUB_APP_CLIENT_SECRET }}" >> Release/.env
           echo "SMTP_USERNAME=${{secrets.SMTP_USERNAME }}" >> Release/.env
           echo "SMTP_PASSWORD=${{secrets.SMTP_PASSWORD }}" >> Release/.env
-
+          echo "WEB_HOME=${{secrets.WEB_HOME_DEV }}" >> Release/.env
+  
     - name: List files
       run: |
           cd server
