@@ -14,16 +14,20 @@
 
 <PageTitle>Beta Sign up</PageTitle>
 
-@if (Project == null)
-{
-    <div class="lds-facebook"><div></div><div></div><div></div></div>
-}
-else
-{
-    <h1>Sign up for @Project.Name beta testing</h1>
-    <p>Sign up as a beta tester for this project. You will get notified when new releases are made.</p>
-    <button @onclick="OnSignUp" >Sign Up</button>
-}
+<main class="flex flex-col items-center h-screen m-4">
+    @if (Project == null)
+    {
+        <div class="lds-facebook"><div></div><div></div><div></div></div>
+    }
+    else
+    {
+        <h1 class="text-4xl">@Project.Name Beta Testing</h1>
+        <section class="flex flex-col items-center justify-center gap-y-4 h-screen">
+            <p class="text-lg">Sign up as a beta tester for this project. You will get notified when new releases are made.</p>
+            <button class="rounded py-2 px-4 bg-blue-600 text-white" @onclick="OnSignUp" >Sign Up</button>
+        </section>
+    }
+</main>
 
 @code
 {
