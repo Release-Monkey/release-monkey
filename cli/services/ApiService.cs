@@ -8,7 +8,10 @@ namespace cli.services
 {
   internal class ApiService
   {
-    private readonly HttpClient httpClient = new();
+    private readonly HttpClient httpClient = new()
+    {
+      Timeout = TimeSpan.FromSeconds(60*10)
+    };
 
     public ApiService(LocalPreferencesServices preferencesServices)
     {
@@ -54,11 +57,13 @@ namespace cli.services
       }
     }
 
-    public Task<Project> CreateProject(string projectName, string githubRepo)
+    public Task<Project> CreateProject(string projectName, string githubRepo, string Token, bool publicProject)
     {
-      return Post<Dictionary<string, string>, Project>("projects", new Dictionary<string, string>{
+      return Post<Dictionary<string, object>, Project>("projects", new Dictionary<string, object>{
                 {"ProjectName", projectName},
-                {"Repo", githubRepo}
+                {"Repo", githubRepo},
+                {"Token", Token},
+                {"PublicProject", publicProject}
             });
     }
 
@@ -83,11 +88,12 @@ namespace cli.services
       return Get<Project>($"projects/{projectId}");
     }
 
-    public Task<Release> CreateRelease(string releaseName, int projectId)
+    public Task<Release> CreateRelease(string releaseName, int projectId, string downloadLink)
     {
       return Post<Dictionary<string, object>, Release>("releases", new Dictionary<string, object>{
                 {"Name", releaseName},
-                {"ProjectId", projectId}
+                {"ProjectId", projectId},
+                {"DownloadLink", downloadLink}
             });
     }
 

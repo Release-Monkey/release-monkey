@@ -2,12 +2,13 @@
 
 @using ReleaseMonkeyWeb.Models
 @using Blazored.LocalStorage
+@using ReleaseMonkeyWeb.Services
 
 @inject Microsoft.JSInterop.IJSRuntime JSRuntime
 @inject NavigationManager navigationManager
 @inject Services.LocalPreferencesServices preferencesServices
 @inject ILocalStorageService localStorage
-@inject Services.ApiService apiService
+@inject ApiService apiService
 
 @rendermode InteractiveServer
 
@@ -16,7 +17,7 @@
 <main class="flex justify-center items-center">
     <section class="flex flex-col gap-y-4 w-1/2 m-4 p-4">
         <h3 class="text-2xl">Releases</h3>
-        @if (releaseTesters == null) {
+        @if (releaseTesters == null || releaseTesters.Count() == 0) {
             <p class="text-slate-400">Nothing left to approve. I see you're on top of everything.</p>
         }
 
@@ -55,6 +56,8 @@
     {
         if (firstRender)
         {
+            apiService.ConfigureEnv(navigationManager.Uri);
+            await apiService.SetStorage();
             var user = await preferencesServices.GetUser();
             if (user == null)
             {

@@ -44,11 +44,11 @@ namespace cli
       return Task.FromResult<object?>(null);
     }
 
-    public async Task CreateProject(string projectName, string githubRepo)
+    public async Task CreateProject(string projectName, string githubRepo, string token, bool publicProject)
     {
       try
       {
-        var project = await apiService.CreateProject(projectName, githubRepo);
+        var project = await apiService.CreateProject(projectName, githubRepo, token, publicProject);
         preferencesServices.SetProject(project);
         Console.WriteLine($"Project has been created. Project id is {project.Id}.");
       }
@@ -117,7 +117,7 @@ namespace cli
       }
     }
     
-    public async Task CreateRelease(string releaseName)
+    public async Task CreateRelease(string releaseName, string downloadLink)
     {
       var currentProject = preferencesServices.GetProject();
       if (currentProject == null)
@@ -126,7 +126,7 @@ namespace cli
       }
       else
       {
-        var release = await apiService.CreateRelease(releaseName, currentProject.Id);
+        var release = await apiService.CreateRelease(releaseName, currentProject.Id, downloadLink);
         Console.WriteLine($"New release, {release.ReleaseName}, has been created for {currentProject.Name}. Your testers will be notified via email to begin testing.");
       }
     }

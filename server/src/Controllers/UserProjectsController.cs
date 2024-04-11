@@ -37,12 +37,12 @@ namespace ReleaseMonkey.Server.Controller
       }
     }
 
-    // [HttpPost]
-    // public async Task<IActionResult> Create(CreateUserProjectRequest body)
-    // {
-    //   var createdUserProject = await userProjects.InsertUserProjectByUserID(body.UserId, body.ProjectId, body.Role);
-    //   return CreatedAtRoute("FetchUserProjectById", new { createdUserProject.Id }, createdUserProject);
-    // }
+    [HttpPost("beta")]
+    public async Task<IActionResult> CreateWithUserId(CreateUserProjectRequest body)
+    {
+       var createdUserProject = await userProjects.InsertUserProjectByUserID(body.UserId, body.ProjectId, body.Role);
+       return CreatedAtRoute("FetchUserProjectById", new { createdUserProject.Id }, createdUserProject);
+     }
 
     [HttpPost]
     public async Task<IActionResult> Create(CreateUserProjectViaEmailRequest body)
@@ -50,6 +50,5 @@ namespace ReleaseMonkey.Server.Controller
       var createdUserProject = await userProjects.InsertUserProjectByEmail(body.Email, body.ProjectId, body.Role);
       return CreatedAtRoute("FetchUserProjectById", new { createdUserProject.Id }, createdUserProject);
     }
-
   }
 }

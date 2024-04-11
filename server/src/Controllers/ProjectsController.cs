@@ -9,13 +9,17 @@ namespace ReleaseMonkey.Server.Controller
   public record CreateProjectRequest
   (
       string ProjectName,
-      string Repo
+      string Repo,
+      string Token,
+      bool PublicProject
   );
 
   public record UpdateProjectRequest
   (
       string ProjectName,
-      string Repo
+      string Repo,
+      string Token,
+      bool PublicProject
   );
 
   [ApiController]
@@ -24,11 +28,7 @@ namespace ReleaseMonkey.Server.Controller
   {
     private readonly ProjectsService projects = projects;
 
-    [HttpGet]
-    public IActionResult Fetch()
-    {
-      return Ok(projects);
-    }
+    
 
     [HttpGet("{id:int}", Name = "FetchProjectById")]
     public async Task<IActionResult> Fetch(int id)
@@ -55,6 +55,27 @@ namespace ReleaseMonkey.Server.Controller
       }
     }
 
+    [HttpGet("public/{id:int}", Name = "FetchPublicProjectById")]
+    public async Task<IActionResult> FetchPublicById(int id)
+    {
+      try
+      {
+        return Ok(await projects.GetPublicProjectById(id));
+      }
+      catch (KeyNotFoundException e)
+      {
+        return NotFound(e.Message);
+      }
+    }
+
+    [HttpGet("public", Name = "FetchPublicProject")]
+    public async Task<IActionResult> FetchPublic(int id)
+    {
+      
+      return Ok(await projects.GetPublicProjects());
+      
+    }
+
     [HttpPost]
     public async Task<IActionResult> Create(CreateProjectRequest body)
     {
@@ -63,8 +84,15 @@ namespace ReleaseMonkey.Server.Controller
 
       if (userRepos.Contains(body.Repo))
       {
-        var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, user.Token);
-        return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
+        var tokenRepos = await githubService.ListRepos(body.Token);
+        if (userRepos.Equals(tokenRepos)) 
+        { 
+          var createdProject = await projects.CreateProject(user.Id, body.ProjectName, body.Repo, body.Token, body.PublicProject);
+          return CreatedAtRoute("FetchProjectById", new { createdProject.Id }, createdProject);
+        } else 
+        { 
+          return Forbid($"Please ensure that the personal access token inserted belongs to you and is correct");
+        }
       }
       else
       {

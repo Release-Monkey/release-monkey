@@ -8,7 +8,8 @@ namespace ReleaseMonkey.Server.Controller
     public record CreateReleaseRequest
     (
         string Name,
-        int ProjectId
+        int ProjectId,
+        string DownloadLink
     );
 
     [ApiController]
@@ -18,7 +19,9 @@ namespace ReleaseMonkey.Server.Controller
         [HttpGet]
         public IActionResult Fetch()
         {
-            return Ok(releases.GetAllReleases());
+            var currentUser = HttpContext.Features.Get<UserWithToken>()!;
+
+            return Ok(releases.GetAllReleases(currentUser.Id));
         }
 
         [HttpGet("{id:int}", Name = "FetchReleaseById")]
@@ -42,7 +45,7 @@ namespace ReleaseMonkey.Server.Controller
         [HttpPost]
         public async Task<IActionResult> Create(CreateReleaseRequest body)
         {
-            var createdRelease = await releases.CreateRelease(body.Name, body.ProjectId);
+            var createdRelease = await releases.CreateRelease(body.Name, body.ProjectId, body.DownloadLink);
             return CreatedAtRoute("FetchReleaseById", new { createdRelease.Id }, createdRelease);
         }
     }

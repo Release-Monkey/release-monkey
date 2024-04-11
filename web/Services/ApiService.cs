@@ -5,23 +5,56 @@ using ReleaseMonkeyWeb.Models;
 
 namespace ReleaseMonkeyWeb.Services
 {
-    public class ApiService
+    public enum Build
     {
-        private readonly HttpClient http = new();
+        Developer,
+        Beta,
+        Production,
+    }
 
-        public ApiService(LocalPreferencesServices preferencesServices)
+    public class ApiService(LocalPreferencesServices preferencesServices)
+    {
+        static readonly int BetaTesterId = 2;
+
+        private readonly HttpClient http = new();
+        private User? CurrentUser;
+
+        public static Build CurrentBuild {get; set; } = Build.Developer;
+
+        public async Task SetStorage()
         {
-            preferencesServices.GetUser().ContinueWith(async (getUserTask) =>
+            CurrentUser = await preferencesServices.GetUser();
+            if (CurrentUser != null)
             {
-                User? user = await getUserTask;
-                if (user != null)
-                {
-                    http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", user.Token);
-                }
-            });
+                http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", CurrentUser.Token);
+            }
         }
 
-        private static string BuildUrl(string path) => $"http://localhost:3000/{path}";
+        public void ConfigureEnv(string path)
+        {
+            if(path.Contains("localhost"))
+            {
+                CurrentBuild = Build.Developer;
+            }
+            else if(path.Contains(":8000"))
+            {
+                CurrentBuild = Build.Beta;
+            }
+            else
+            {
+                CurrentBuild = Build.Production;
+            }
+        }
+
+        private static string BuildUrl(string path)
+        {
+            return CurrentBuild switch
+            {
+                Build.Developer => $"http://localhost:3000/{path}",
+                Build.Beta => $"http://52.210.18.60:3000/{path}",
+                _ => $"http://52.210.18.60:5000/{path}",
+            };
+        }
 
         private async Task<R> Post<T, R>(string path, T body) where T : class where R : class
         {
@@ -74,7 +107,7 @@ namespace ReleaseMonkeyWeb.Services
 
         public async Task<List<Models.ReleaseTester>> FetchReleases ()
         {
-            var body = await Get<Dictionary<string, object>>("release-testers");
+            var body = await Get<Dictionary<string, object>>($"release-testers/testers/{CurrentUser.Id}");
             var releaseTesters = ((JsonElement) body["Result"]).Deserialize<List<Responses.ReleaseTester>>();
             body = await Get<Dictionary<string, object>>("releases");
             
@@ -90,6 +123,20 @@ namespace ReleaseMonkeyWeb.Services
         public List<Models.ReleaseTester> GetPendingReleases (List<Models.ReleaseTester> releaseTesters)
         {
             return releaseTesters.Where(x => x.State == 2).ToList();
+        }
+
+        public Task<PublicProject> GetPublicProject(string projectId)
+        {
+            return Get<PublicProject>($"projects/{projectId}/public");
+        }
+
+        public Task<UserProject> AddBetaTester(int projectId)
+        {
+            return Post<Dictionary<string, object>, UserProject>("user-projects/beta", new Dictionary<string, object>{
+                {"UserId", CurrentUser!.Id},
+                {"ProjectId", projectId},
+                {"Role", BetaTesterId}
+            });
         }
     }
 

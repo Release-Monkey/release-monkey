@@ -1,12 +1,8 @@
 name: "Terraform action"
 on: 
-  pull_request:
-    types:
-      - closed
+  push:
     branches:
       - main
-    paths:
-      - 'terraform/*'
 
 permissions:
   id-token: write # This is required for aws oidc connection
@@ -18,7 +14,6 @@ env:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     defaults:
       run:

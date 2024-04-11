@@ -8,7 +8,7 @@ using System.Transactions;
 
 namespace ReleaseMonkey.Server.Services
 {
-    public class ReleaseTestersService(ReleaseTestersRepository releaseTesters, ReleasesRepository releases, ProjectsRepository projects, UserProjectsRepository userProjects, UsersRepository users, Db db)
+    public class ReleaseTestersService(ReleaseTestersRepository releaseTesters, ReleasesRepository releases, ProjectsRepository projects, UserProjectsRepository userProjects, UsersRepository users, Db db, GithubService github)
     {
         public Task<List<ReleaseTester>> GetAllReleaseTesters()
         {
@@ -20,28 +20,35 @@ namespace ReleaseMonkey.Server.Services
             return Task.FromResult(releaseTesters.GetReleaseTestersByReleaseId(db, releaseId));
         }
 
+        public Task<List<ReleaseTester>> GetReleaseTestersByTesterId(int testerId)
+        {
+            return Task.FromResult(releaseTesters.GetReleaseTestersByTesterId(db, testerId));
+        }
+
         public Task<ReleaseTester> GetReleaseTesterById(int releaseTesterId)
         {
             return Task.FromResult(releaseTesters.GetReleaseTesterById(db, releaseTesterId));
         }
 
-        public Task<ReleaseTester> UpdateReleaseTester(int ReleaseTesterId, int State, string Comment)
+        public async Task<ReleaseTester> UpdateReleaseTester(int ReleaseTesterId, int State, string Comment)
         {
             ReleaseTester releaseTester = releaseTesters.UpdateReleaseTester(db, ReleaseTesterId, State, Comment);
-            if (GetReleaseState(releaseTester.ReleaseId)==1) 
+            int releaseState = GetReleaseState(releaseTester.ReleaseId);
+            if (releaseState == 1) 
             {
                 Release release = releases.GetReleaseById(db, releaseTester.ReleaseId);
                 Project project = projects.GetProjectById(db, release.ProjectId);
                 var userIds = from userProject in userProjects.GetUsersForProject(db, project.Id) select userProject.UserId;
-                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, Email.RejectedRelease);
-            } else if (GetReleaseState(releaseTester.ReleaseId) == 0)
+                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, "", Email.RejectedRelease);
+            } else if (releaseState == 0)
             {
                 Release release = releases.GetReleaseById(db, releaseTester.ReleaseId);
                 Project project = projects.GetProjectById(db, release.ProjectId);
                 var userIds = from userProject in userProjects.GetUsersForProject(db, project.Id) select userProject.UserId;
-                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, Email.AcceptedRelease);
+                github.ReleaseProject(project.Repo, project.Token, release.ReleaseName);
+                Email.sendEmail(users.GetUserEmailsByIds(db, userIds.ToList()), release.ReleaseName, project.Name, "", Email.AcceptedRelease);
             }
-            return Task.FromResult(releaseTester);
+            return releaseTester;
         }
 
         public Task<ReleaseTester> CreateReleaseTester(int ReleaseId, int TesterId)

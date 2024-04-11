@@ -1,0 +1,76 @@
+@page "/project/{id:int}/beta"
+
+@using ReleaseMonkeyWeb.Models
+@using Blazored.LocalStorage
+@using Services
+
+@inject NavigationManager navigationManager
+@inject ApiService apiService
+@inject ILocalStorageService localStorage
+@inject LocalPreferencesServices preferencesServices
+@inject IJSRuntime jsRuntime
+
+@rendermode InteractiveServer
+
+<PageTitle>Beta Sign up</PageTitle>
+
+@if (Project is null)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    <h1>Sign for @Project.Name beta testing</h1>
+    <p>Sign up as a beta tester for this project. You will get notified when new releases are made.</p>
+    <button @onclick="OnSignUp" >Sign Up</button>
+}
+
+@code
+{
+    [Parameter] public int Id { get; set; }
+    public PublicProject? Project { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            apiService.ConfigureEnv(navigationManager.Uri);
+            await apiService.SetStorage();
+
+            try
+            {
+                Project = await apiService.GetPublicProject(Id.ToString());
+                StateHasChanged();
+            }
+            catch (ApiException e)
+            {
+                await jsRuntime.InvokeVoidAsync("alert", e.Message);
+            }
+        }
+    }
+
+    public async Task OnSignUp()
+    {
+        var user = await preferencesServices.GetUser();
+        if(user == null)
+        {
+           var confirmLogin = await jsRuntime.InvokeAsync<bool>("confirm", "Please sign in with your github account before you join this project.");
+            if(confirmLogin)
+            {
+                navigationManager.NavigateTo($"/login?next={navigationManager.Uri}");
+            }
+        }
+        else
+        {
+            try
+            {
+                await apiService.AddBetaTester(Project!.Id);
+                navigationManager.NavigateTo("/");
+            }
+            catch(ApiException e)
+            {
+                await jsRuntime.InvokeVoidAsync("alert", e.Message);
+            }
+        }
+    }
+}

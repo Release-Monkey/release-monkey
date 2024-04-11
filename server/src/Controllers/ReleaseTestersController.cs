@@ -41,8 +41,14 @@ namespace ReleaseMonkey.Server.Controller
       }
     }
 
+    [HttpGet("testers/{id:int}", Name = "FetchReleaseTesterByTesterId")]
+    public IActionResult FetchByTesterId(int id)
+    {
+      return Ok(releaseTesters.GetReleaseTestersByTesterId(id));
+    }
+
     [HttpGet("release/{id:int}", Name = "FetchReleaseTesterByReleaseId")]
-    public IActionResult FetchByProjectId(int id)
+    public IActionResult FetchByReleaseId(int id)
     {
       return Ok(releaseTesters.GetReleaseTestersByReleaseId(id));
     }

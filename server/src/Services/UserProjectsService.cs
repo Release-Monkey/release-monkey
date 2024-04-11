@@ -7,7 +7,7 @@ using System.Transactions;
 
 namespace ReleaseMonkey.Server.Services
 {
-  public class UserProjectsService(UserProjectsRepository userProjects, UsersRepository users, Db db)
+  public class UserProjectsService(UserProjectsRepository userProjects, UsersRepository users, ProjectsRepository projects, Db db)
   {
 
     public Task<UserProject> GetUserProjectById(int userProjectId)
@@ -15,15 +15,18 @@ namespace ReleaseMonkey.Server.Services
       return Task.FromResult(userProjects.GetUserProjectById(db, userProjectId));
     }
 
-    public Task<UserProject> InsertUserProjectByUserID(int userId, int projectId, int role)
+    public async Task<UserProject> InsertUserProjectByUserID(int userId, int projectId, int role)
     {
       using (SqlTransaction transaction = db.Connection.BeginTransaction())
       {
         try
         {
           UserProject userProject = userProjects.InsertUserProject(transaction, db, userId, projectId, role);
+          var project = projects.GetProjectById(transaction, db, projectId);
+          var user = users.GetUserById(userId);
+          Email.sendEmail([user.Email], "releases", project.Name, "", Email.WelcomeNewBetaTester);
           transaction.Commit();
-          return Task.FromResult(userProject);
+          return await Task.FromResult(userProject);
         }
         catch (Exception)
         {
@@ -33,7 +36,7 @@ namespace ReleaseMonkey.Server.Services
       }
     }
 
-    public Task<UserProject> InsertUserProjectByEmail(string email, int projectId, int role)
+    public async Task<UserProject> InsertUserProjectByEmail(string email, int projectId, int role)
     {
 
       User user;
@@ -51,8 +54,10 @@ namespace ReleaseMonkey.Server.Services
         try
         {
           UserProject userProject = userProjects.InsertUserProject(transaction, db, user.Id, projectId, role);
+          var project = projects.GetProjectById(transaction, db, projectId);
+          Email.sendEmail([user.Email], "releases", project.Name, "", Email.WelcomeNewPrimaryTester);
           transaction.Commit();
-          return Task.FromResult(userProject);
+          return await Task.FromResult(userProject);
         }
         catch (Exception)
         {
