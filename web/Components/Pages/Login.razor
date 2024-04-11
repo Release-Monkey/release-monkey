@@ -28,8 +28,8 @@
         if (firstRender)
         {
             apiService.ConfigureEnv(navigationManager.Uri);
-            await apiService.SetStorage(localStorage);
-            var currentUser = await preferencesServices.GetUser(localStorage);
+            await apiService.SetStorage();
+            var currentUser = await preferencesServices.GetUser();
             if (currentUser == null)
             {
                 var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
@@ -37,7 +37,7 @@
                 if (parameters.ContainsKey("code"))
                 {
                     var user = await apiService.LoginUser(parameters["code"].ToString());
-                    await preferencesServices.SetUser(user, localStorage);
+                    await preferencesServices.SetUser(user);
                     navigationManager.NavigateTo("/");
                 };
             }

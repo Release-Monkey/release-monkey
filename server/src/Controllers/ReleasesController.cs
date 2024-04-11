@@ -19,7 +19,9 @@ namespace ReleaseMonkey.Server.Controller
         [HttpGet]
         public IActionResult Fetch()
         {
-            return Ok(releases.GetAllReleases());
+            var currentUser = HttpContext.Features.Get<UserWithToken>()!;
+
+            return Ok(releases.GetAllReleases(currentUser.Id));
         }
 
         [HttpGet("{id:int}", Name = "FetchReleaseById")]
