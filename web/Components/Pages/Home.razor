@@ -17,11 +17,16 @@
 <main class="flex justify-center items-center">
     <section class="flex flex-col gap-y-4 w-1/2 m-4 p-4">
         <h3 class="text-2xl">Releases</h3>
-        @if (releaseTesters == null || releaseTesters.Count() == 0) {
-            <p class="text-slate-400">Nothing left to approve. I see you're on top of everything.</p>
+        @if (releaseTesters == null) {
+            <div class="lds-facebook"><div></div><div></div><div></div></div>
         }
 
         @if (releaseTesters != null) {
+
+            @if (releaseTesters.Count() == 0) {
+                <p class="text-slate-400">Nothing left to approve. I see you're on top of everything.</p>
+            }
+
             @foreach (var releaseTester in releaseTesters) {
                 <article class="flex flex-row justify-between">
                     <div class="flex flex-row p-4 border rounded gap-x-24">
