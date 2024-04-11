@@ -1,9 +1,9 @@
 name: Flyway Migrations Grad
 
 on:
-  push:
-    tags:
-      - 'v*-prod'
+  # push:
+  #   tags:
+  #     - 'v*-prod'
 
 env:
   FLYWAY_VERSION: 9.16.3
@@ -25,6 +25,6 @@ jobs:
         FLYWAY_USER: ${{ secrets.DB_GRAD_USERNAME }}
         FLYWAY_PASSWORD: ${{ secrets.DB_GRAD_PASSWORD }}
       run: |
-        flyway repair -X -locations=sql/dev
-        flyway info -X -locations=sql/grad
-        flyway migrate -X -locations=sql/grad
+        flyway repair -X -locations=sql/
+        flyway info -X -locations=sql/
+        flyway migrate -X -locations=sql/

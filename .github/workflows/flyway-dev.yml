@@ -1,9 +1,9 @@
 name: Flyway Migrations Dev
 
 on:
-  push:
-    tags:
-      - 'v*-beta'
+  # push:
+  #   tags:
+  #     - 'v*-beta'
   
 env:
   FLYWAY_VERSION: 9.16.3
@@ -25,6 +25,6 @@ jobs:
         FLYWAY_USER: ${{ secrets.DB_DEV_USERNAME }}
         FLYWAY_PASSWORD: ${{ secrets.DB_DEV_PASSWORD }}
       run: |
-        flyway repair -X -locations=sql/dev
-        flyway info -X -locations=sql/dev
-        flyway migrate -X -locations=sql/dev
+        flyway repair -X -locations=sql/
+        flyway info -X -locations=sql/
+        flyway migrate -X -locations=sql/
